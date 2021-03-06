@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="2.0">
+
+    <persistence-unit name="xyapp" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>com.ab.app.agentbook.security.user.entity.XyUserEntity</class>
+        <class>com.ab.app.agentbook.security.role.entity.XyRoleEntity</class>
+        <class>com.ab.app.agentbook.security.role.entity.XyUserRoleEntity</class>
+        <class>com.ab.app.agentbook.bankCard.entity.XyBankCardEntity</class>
+        <class>com.ab.app.agentbook.company.entity.XyCompanyEntity</class>
+        <class>com.ab.app.agentbook.paymentVoucher.entity.XyPaymentVoucherEntity</class>
+        <class>com.ab.app.agentbook.coin.entity.XyCoinInfoEntity</class>
+        <class>com.ab.app.agentbook.level.entity.XyLevelInfoEntity</class>
+        <class>com.ab.app.agentbook.recharge.entity.XyUserRecharageInfoEntity</class>
+        <class>com.ab.app.agentbook.company.entity.AbTransactionEntity</class>
+        <class>com.ab.app.agentbook.recharge.entity.XyCashInfoEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbFundAccountEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbGroupEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbIncomeCategoryItemEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbPaymentCategoryItemEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbPaymentItemEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbReceivePayItemEntity</class>
+        <class>com.ab.app.agentbook.baseinfo.entity.AbSalesmanEntity</class>
+        <class>org.springframework.data.jpa.domain.AbstractAuditable</class>
+        <class>org.springframework.data.jpa.domain.AbstractPersistable</class>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+        <properties>
+            <property name="hibernate.connection.url"
+                      value="jdbc:mysql://localhost:3306/agentbook?useSSL=false&amp;serverTimezone=GMT%2B8&amp;allowPublicKeyRetrieval=true"/>
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver"/>
+        </properties>
+    </persistence-unit>
+    <persistence-unit name="agentbook"/>
+</persistence>

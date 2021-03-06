@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:repository="http://www.springframework.org/schema/data/repository"
+ xmlns:util="http://www.springframework.org/schema/util"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans 
+    https://www.springframework.org/schema/beans/spring-beans.xsd        
+    http://www.springframework.org/schema/aop 
+    https://www.springframework.org/schema/aop/spring-aop.xsd
+    http://www.springframework.org/schema/data/jpa
+    https://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/data/repository
+    https://www.springframework.org/schema/data/repository/spring-repository.xsd
+    http://www.springframework.org/schema/util 
+    https://www.springframework.org/schema/util/spring-util.xsd">
+    
+  <!-- 平台层 service 和 dao 的spring 配置文件 -->
+
+  <!-- 注入Dao -->
+  <!-- 使用Spring Data时，dao bean通过扫描注解产生，base-package必须限定在必要模块的范围，不允许扩展到其它范围 -->
+  <jpa:repositories base-package="com.ab.app.agentbook"
+    factory-class="com.ab.app.agentbook.jpa.GenericRepositoryFactoryBean"
+    entity-manager-factory-ref="entityManagerFactory" transaction-manager-ref="transactionManager"
+    repository-impl-postfix="Impl">
+    <repository:include-filter type="regex"
+      expression="com\.ab\.app\.agentbook\..*\.dao\..*Dao" />
+  </jpa:repositories>
+     
+  <!-- 注入service -->
+  <!-- service bean必须使用xml配置方式，不允许使用注解；如果Service使用dao，推荐使用配置（也可以在setDemoDao方法上用@Resource注解）。样例：-->
+  <!-- 用户服务 -->
+  <bean id="userService" class="com.ab.app.agentbook.security.user.service.impl.UserviceImpl">
+    <property name="userDao" ref="userDao" />
+    <property name="roleDao" ref="roleDao" />
+    <property name="userRoleDao" ref="userRoleDao" />
+  </bean>
+  <!-- 文件服务上传 -->
+  <bean id="fileStoreService" class="com.ab.app.agentbook.file.sercice.impl.FileServiceImpl">
+    <property name="fileRootPath" value="${agentbook.fileupload.rootpath}" />
+  </bean>
+  <!-- 资金账户信息服务 -->
+  <bean id="fundAccountService" class="com.ab.app.agentbook.baseinfo.service.impl.FundAccountServiceImpl">
+    <property name="fundAccountDao" ref="fundAccountDao" />
+  </bean>
+  <!-- 部门信息服务 -->
+  <bean id="groupService" class="com.ab.app.agentbook.baseinfo.service.impl.GroupServiceImpl">
+    <property name="groupDao" ref="groupDao" />
+  </bean>
+  <!-- 收款项目类别服务 -->
+  <bean id="incomeCategoryService" class="com.ab.app.agentbook.baseinfo.service.impl.IncomeCategoryServiceImpl">
+    <property name="incomeCategoryDao" ref="incomeCategoryDao" />
+  </bean>
+  <!-- 支出项目类别服务 -->
+  <bean id="paymentCategoryService" class="com.ab.app.agentbook.baseinfo.service.impl.PaymentCategoryServiceImpl">
+    <property name="paymentCategoryDao" ref="paymentCategoryDao" />
+  </bean>
+  <!-- 支出项目服务 -->
+  <bean id="paymentService" class="com.ab.app.agentbook.baseinfo.service.impl.PaymentServiceImpl">
+    <property name="paymentDao" ref="paymentDao" />
+  </bean>
+  <!-- 收款项目服务 -->
+  <bean id="receivePayService" class="com.ab.app.agentbook.baseinfo.service.impl.ReceivePayServiceImpl">
+    <property name="receivePayDao" ref="receivePayDao" />
+  </bean>
+  <!-- 业务员信息服务 -->
+  <bean id="salesmanService" class="com.ab.app.agentbook.baseinfo.service.impl.SalesmanServiceImpl">
+    <property name="salesmanDao" ref="salesmanDao" />
+  </bean>
+  <!-- 往来类别服务 -->
+  <bean id="abTransactionService" class="com.ab.app.agentbook.company.service.impl.AbTransactionServiceImpl">
+    <property name="abTransactionDao" ref="abTransactionDao" />
+  </bean>
+  <!-- 登陆用户服务 -->
+  <bean id="customUserService" class="com.ab.app.agentbook.security.user.service.impl.CustomUserService">
+    <property name="userService" ref="userService" />
+  </bean>
+</beans>

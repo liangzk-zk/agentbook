@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+  xmlns:tx="http://www.springframework.org/schema/tx" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+    http://www.springframework.org/schema/beans
+    https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context
+    https://www.springframework.org/schema/context/spring-context.xsd
+    http://www.springframework.org/schema/mvc
+    https://www.springframework.org/schema/mvc/spring-mvc.xsd
+    http://www.springframework.org/schema/tx
+    https://www.springframework.org/schema/tx/spring-tx.xsd">
+
+  <context:property-placeholder />
+
+  <tx:annotation-driven order="100" />
+  <mvc:annotation-driven>
+    <mvc:path-matching path-helper="urlPathHelper" />
+  </mvc:annotation-driven>
+  <!-- 扫描 平台 目录下的 controller -->
+  <context:component-scan base-package="com.ab.app" use-default-filters="false">
+    <context:include-filter type="regex"
+      expression="com\.ab\.app\.agentbook\..*\.mvc\..*Controller" />
+  </context:component-scan>
+  
+  <!-- 其他资源视图解析器 -->
+  <bean id="resourceViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+    <property name="viewClass">
+      <value>org.springframework.web.servlet.view.JstlView</value>
+    </property>
+    <property name="prefix" value="/view/" />
+    <property name="suffix" value=".jsp" />
+    <property name="order" value="2" />
+  </bean>
+    <!-- 缺省jsp显示控制器 -->
+  <bean id="defaultViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+    <property name="alwaysUseFullPath" value="true" />
+  </bean>
+
+    <!-- 静态资源读取器 -->
+  <bean id="defaultResourceHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+    <property name="cacheControl" ref="cacheControl" />
+    <property name="locations" value="/view/" />
+  </bean>
+
+  <!-- 静态资源读取器 -->
+  <bean id="staticResourceHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+    <property name="cacheControl" ref="cacheControl" />
+    <property name="locations">
+      <list>
+        <value>/resources/</value>
+        <value>classpath:/META-INF/resources/</value>
+      </list>
+    </property>
+  </bean>
+  <bean id="webjarsResourceHandler" class="org.springframework.web.servlet.resource.ResourceHttpRequestHandler">
+    <property name="cacheControl" ref="cacheControl" />
+    <property name="locations">
+      <list>
+        <value>classpath:/META-INF/resources/webjars/</value>
+      </list>
+    </property>
+  </bean>
+  <!-- 路径处理帮助类 -->
+  <bean id="urlPathHelper" class="org.springframework.web.util.UrlPathHelper">
+    <property name="alwaysUseFullPath" value="true" />
+  </bean>
+  <bean id="cacheControl" class="org.springframework.http.CacheControl" factory-method="maxAge">
+    <constructor-arg index="0" value="30" />
+    <constructor-arg index="1" value="DAYS" />
+  </bean>
+  <!-- <bean class="com.hd.rcugrc.cloud.config.SwaggerConfig" /> -->
+  <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="order" value="0" />
+    <property name="alwaysUseFullPath" value="true" />
+    <property name="mappings">
+      <props>
+        <prop key="/resources/*">staticResourceHandler</prop>
+        <prop key="/resources/**/*">staticResourceHandler</prop>
+        <prop key="/swagger-ui.html">staticResourceHandler</prop>
+        <prop key="/webjars/**">webjarsResourceHandler</prop>
+        <prop key="/*.jsp">defaultViewController</prop>
+        <prop key="/**/*.jsp">defaultViewController</prop>
+        <prop key="/*">defaultResourceHandler</prop>
+        <prop key="/**/*">defaultResourceHandler</prop>
+      </props>
+    </property>
+  </bean>
+</beans>

@@ -1,0 +1,46 @@
+{{for files }}
+<tr class="template-download" id="{{:code}}">
+    <td class="tdOne" style="width: 5%;">
+	<span> 
+		{{if thumbnailUrl }} 
+			<a title="{{:name }}" data-gallery>
+				<img src="{{:thumbnailUrl}}" onload="loadImg(this)" style="width: 80px; display: none;" onerror="loadImgError(this)">
+			</a>
+				<img src="{{:contextPath}}/resources/plugins/jqueryFileUpload/img/loading.gif" style="width: 50px;" /> 
+		{{/if}}
+	</span>
+	</td>
+	<td class="tdTwo" style="width: 50%;">
+		<p class="name">
+		{{if url }} 
+			<span><a href="{{:url }}" target="{{:target }}">{{:name}}</a></span>
+		{{/if }}
+		</p> 
+		{{if error }}
+		<div>
+			<span class="label label-danger">Error</span>{{:error}}
+		</div> 
+		{{/if }}
+	</td>
+	<td class="tdThree" style="width: 10%;"><span class="size">{{:~formatFileSize(size)}}</span>
+	</td>
+	<td class="tdFour" style="width: 35%;">
+	{{if isImgs}}
+		<a class="btn btn-primary prewButton " onclick="previewAttment('{{:url }}','{{:type}}','{{:name}}','{{:docId}}','{{:suffix}}')"><i class="glyphicon glyphicon-eye-open"></i><span>{{:preview}}</span></a>
+	{{/if }}
+	{{if url}}
+		<a class="btn btn-info download" target="_blank" href="{{:url }}"><i class="glyphicon glyphicon-download-alt"></i><span>{{:download}}</span></a>
+	{{/if }}
+	{{if deleteable }}
+		<a class="btn btn-danger delete" data-attachmentId="{{:code}}" href="javascript:void(0);"><i class="glyphicon glyphicon-trash"></i><span>{{:deletes}}</span></a>
+	{{/if }}
+	{{if !deleteUrl }}
+		<a class="btn btn-warning cancel" href="javascript:void(0);"><i class="glyphicon glyphicon-ban-circle"></i><span>{{:cancel}}</span></a>
+	{{/if }}
+    {{if isSort}}
+        <a class="btn upatt" href="javascript:void(0);"><i class="glyphicon glyphicon-arrow-up"></i></a>
+        <a class="btn downatt" href="javascript:void(0);"><i class="glyphicon glyphicon-arrow-down"></i></a>
+    {{/if}}
+	</td>
+</tr>
+{{/for}}

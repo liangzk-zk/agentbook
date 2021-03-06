@@ -1,0 +1,14 @@
+<div class="btn-group dropTree" id="dropTree_{{:id}}">
+	<div class="input-icon right dropdown-toggle" data-toggle="{{:readonly===true?'':'dropdown'}}" aria-expanded="true">
+        {{if id == "no_drop_down"}}
+		<input type="text" style="background:#F0F0F0" class="form-control" id="dropDownTree_display_value_{{:id}}" name="dropDownTree_display_value_{{:id}}" readonly="readonly"  value="{{:selected?(selected.label?selected.label:''):''}}">
+        {{else}}
+        <i class="fa fa-chevron-down"></i>
+        <input type="text" class="form-control" id="dropDownTree_display_value_{{:id}}" name="dropDownTree_display_value_{{:id}}" readonly="readonly"  value="{{:selected?(selected.label?selected.label:''):''}}">
+        {{/if}} 
+		<input type="hidden" class="form-control" name="{{:name}}" id="{{:id}}"  value="{{:selected?(selected.value?selected.value:''):''}}">
+	</div>
+	<div class="dropdown-menu dropdown-content hold-on-click" id="dropDownTree_{{:id}}">
+		<div  id="dropDownTree_{{:id}}"></div>
+	</div>
+</div>
