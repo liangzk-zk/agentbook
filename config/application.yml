@@ -1,0 +1,43 @@
+server: 
+  port: 8889
+  servlet: 
+    context-path: /agentbook
+    jsp: 
+      init-parameters: 
+        development: true
+    multipart: 
+      max-file-size: -1
+      max-request-size: -1
+spring: 
+  application: 
+    name: agentbook 
+  datasource: 
+    url: jdbc:mysql://127.0.0.1:3306/agentbook?useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: agentbook
+    password: agentbook
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    database-type: MySQL5InnoDB
+  jpa: 
+    show-sql: false
+    hibernate.ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  mvc:
+    view:
+      prefix: /view/
+      suffix: .jsp
+    static-path-pattern: /static/**
+  main: 
+    allow-bean-definition-overriding: true
+  resources: 
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/WEB-INF/view/
+redis: 
+  server: 
+    host: ds1.hd.com
+    port: 6379
+hibernate: 
+  showsql: false
+agentbook: 
+  fileupload: 
+    rootpath: D:\fileUpload
+web: 
+  upload-path: ${agentbook.fileupload.rootpath}
