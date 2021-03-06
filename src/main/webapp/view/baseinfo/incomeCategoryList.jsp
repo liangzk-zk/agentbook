@@ -8,7 +8,7 @@
 <meta name="viewport"
   content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <%@ include file="/view/common/common-pubilc.jsp"%>
-<title>支出类别列表</title>
+<title>收入类别列表</title>
 <%-- <script type="text/javascript" src="${contextPath}/resources/js/user/userList.js"></script> --%>
 <link rel="stylesheet" href="${contextPath}/resources/assets/css/demo.css" />
 <script type="text/javascript" src="${contextPath}/resources/js/baseinfo/incomeCategory/incomeCategoryList.js"></script>
@@ -16,14 +16,14 @@
 <body>
   <div class="page-inner">
     <div class="page-header">
-      <h4 class="page-title">支出类别管理</h4>
+      <h4 class="page-title">收入类别管理</h4>
       <ul class="breadcrumbs">
         <li class="nav-home"><a href="#"> <i class="flaticon-home"></i>
         </a></li>
         <li class="separator"><i class="flaticon-right-arrow"></i></li>
-        <li class="nav-item"><a href="#">支出类别管理</a></li>
+        <li class="nav-item"><a href="#">收入类别管理</a></li>
         <li class="separator"><i class="flaticon-right-arrow"></i></li>
-        <li class="nav-item"><a href="#">支出类别管理</a></li>
+        <li class="nav-item"><a href="#">收入类别管理</a></li>
       </ul>
     </div>
     <div class="row">
@@ -31,7 +31,7 @@
         <div class="card">
           <div class="card-header">
             <div class="d-flex align-items-center">
-              <button class="btn btn-primary btn-round ml-auto" style="display: none" id="addRow" data-toggle="modal"
+              <button class="btn btn-primary btn-round ml-auto" id="addRow" data-toggle="modal"
                 data-target="#addRowModal">
                 <i class="fa fa-plus"></i> 新增
               </button>
@@ -54,16 +54,17 @@
                     <form>
                       <div class="row">
                         <input id="id" type="text" style="display: none" class="form-control" placeholder="fill name">
-                        <input id="companyId" type="text" style="display: none" value="1" class="form-control"
-                          placeholder="fill name">
-                        <div class="col-sm-12">
+                        <div class="col-sm-6">
                           <div class="form-group">
                             <em style="color: red;">*</em> <label>所属分类</label> <input id="parentClass" type="text"
                               class="form-control" placeholder="所属分类"> <input id="parentId" type="hidden"
                               style="display: none" class="form-control">
+                          </div>
+                        </div>
+                        <div class="col-sm-6">
+                          <div class="form-group">
                             <ul class="ztree" id="classifiTree" style="display: none"></ul>
                           </div>
-
                         </div>
                         <div class="col-sm-12">
                           <div class="form-group">

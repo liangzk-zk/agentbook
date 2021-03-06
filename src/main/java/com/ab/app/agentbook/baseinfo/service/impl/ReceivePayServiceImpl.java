@@ -141,6 +141,7 @@ public class ReceivePayServiceImpl implements ReceivePayService,InitializingBean
         info.setName(entity.getName());
         info.setRemarks(entity.getRemarks());
         info.setReceivepaytype(entity.getReceivepaytype());
+        info.setReceivepayname(entity.getReceivepayname());
         info.setCreatedate(entity.getCreatedate());
         info.setModifydate(entity.getModifydate());
         info.setIscommission(entity.getIscommission());
@@ -156,6 +157,7 @@ public class ReceivePayServiceImpl implements ReceivePayService,InitializingBean
         entity.setName(info.getName());
         entity.setRemarks(info.getRemarks());
         entity.setReceivepaytype(info.getReceivepaytype());
+        entity.setReceivepayname(info.getReceivepayname());
         entity.setCreatedate(info.getCreatedate());
         entity.setModifydate(info.getModifydate());
         entity.setIscommission(info.getIscommission());

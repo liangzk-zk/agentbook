@@ -50,8 +50,7 @@ $(function() {
   };
   var transactionTreeObj = loadTreeObj();
   
-  $("#addClassifiInfo").click(
-      function() {
+  $("#addClassifiInfo").click(function() {
         $('#addClassifiInfoModal').on(
             'show.bs.modal',
             function(event) {

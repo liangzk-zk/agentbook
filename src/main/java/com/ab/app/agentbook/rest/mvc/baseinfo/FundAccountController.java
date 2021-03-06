@@ -91,7 +91,7 @@ public class FundAccountController implements InitializingBean{
             return result.success(queryResult);
         }
         if(StringUtils.isEmpty(orderBy)) {
-            orderBy = "createTime DESC";
+            orderBy = "createdate DESC";
         }
         FundAccountInfo[] datas = fundAccountService.getFundAccounts(criterions, startPosition,
                 maxResults, orderBy);
@@ -137,7 +137,7 @@ public class FundAccountController implements InitializingBean{
             @ApiResponse(code = 415, message = "请求的参数不合法"),
             @ApiResponse(code = 500, message = "调用更新资金账户API内部报错") })
     @ResponseBody
-    public Result updateUser(@RequestBody FundAccountInfo info) {
+    public Result updateFundAccount(@RequestBody FundAccountInfo info) {
         Result result = new Result();
         if(info.getId()==null) {
             result.setCode(10002);
@@ -165,7 +165,7 @@ public class FundAccountController implements InitializingBean{
     @ApiOperation(value = "获取资金账户信息", notes = "获取资金账户信息", tags = {"FUNDACCOUNT"})
     @RequestMapping(value="/getFundAccount/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getUser(
+    public Result getFundAccount(
             @ApiParam(name = "id", value = "用户ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
@@ -182,7 +182,7 @@ public class FundAccountController implements InitializingBean{
     @ApiOperation(value = "删除资金账户信息", notes = "删除资金账户信息", tags = {"FUNDACCOUNT"})
     @RequestMapping(value="/deleteFundAccount/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result deleteUser(
+    public Result deleteFundAccount(
             @ApiParam(name = "id", value = "资金账户ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {

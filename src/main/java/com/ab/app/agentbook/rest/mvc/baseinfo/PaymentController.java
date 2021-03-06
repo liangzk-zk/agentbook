@@ -70,9 +70,9 @@ public class PaymentController implements InitializingBean{
     @ApiOperation(value = "获取付款项目信息", notes = "获取付款项目信息", tags = {"PAYMENT"})
     @RequestMapping(value="/getPaymentList", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "获取资金账户信息成功"),
+            @ApiResponse(code = 200, message = "获取付款项目信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用获取资金账户信息API内部报错") })
+            @ApiResponse(code = 500, message = "调用获取付款项目信息API内部报错") })
     @ResponseBody
     public Result getPaymentList(
             @ApiParam(name = "query", value = "查询列表参数", required = true)
@@ -91,7 +91,7 @@ public class PaymentController implements InitializingBean{
             return result.success(queryResult);
         }
         if(StringUtils.isEmpty(orderBy)) {
-            orderBy = "createTime DESC";
+            orderBy = "createdate DESC";
         }
         PaymentInfo[] datas = paymentService.getPayments(criterions, startPosition,
                 maxResults, orderBy);
@@ -103,26 +103,26 @@ public class PaymentController implements InitializingBean{
         queryResult.setTotal(count);
         return result.success(queryResult);
     }
-    @ApiOperation(value = "新增资金账户信息", notes = "新增资金账户信息", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/addFundAccount", method = RequestMethod.POST)
+    @ApiOperation(value = "新增付款项目信息", notes = "新增付款项目信息", tags = {"PAYMENT"})
+    @RequestMapping(value="/addPayment", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "新增资金账户信息成功"),
+            @ApiResponse(code = 200, message = "新增付款项目信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用资金账户信息API内部报错") })
+            @ApiResponse(code = 500, message = "调用付款项目信息API内部报错") })
     @ResponseBody
-    public Result addFundAccount(@RequestBody PaymentInfo info) {
+    public Result addPayment(@RequestBody PaymentInfo info) {
         Result result = new Result();
         PaymentInfo parent = paymentService.findByCode(info.getCode());
         if(parent!=null) {
-            result.setResultCode(ResultCode.ZZZH_HAS_EXISTED);
+            result.setResultCode(ResultCode.FKXM_HAS_EXISTED);
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.FKXM_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.FKXM_INFO_NAME_IS_NULL);
             return result;
         }
         PaymentInfo bean = paymentService.save(info);
@@ -130,14 +130,14 @@ public class PaymentController implements InitializingBean{
         result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
         return result;
     }
-    @ApiOperation(value = "更新资金账户信息", notes = "更新资金账户", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/updateFundAccount", method = RequestMethod.PUT)
+    @ApiOperation(value = "更新付款项目信息", notes = "更新付款项目", tags = {"PAYMENT"})
+    @RequestMapping(value="/updatePayment", method = RequestMethod.PUT)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "更新资金账户成功"),
+            @ApiResponse(code = 200, message = "更新付款项目成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用更新资金账户API内部报错") })
+            @ApiResponse(code = 500, message = "调用更新付款项目API内部报错") })
     @ResponseBody
-    public Result updateUser(@RequestBody PaymentInfo info) {
+    public Result updatePayment(@RequestBody PaymentInfo info) {
         Result result = new Result();
         if(info.getId()==null) {
             result.setCode(10002);
@@ -145,27 +145,27 @@ public class PaymentController implements InitializingBean{
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.FKXM_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.FKXM_INFO_NAME_IS_NULL);
             return result;
         }
-        PaymentInfo fundAccount = paymentService.findById(info.getId());
-        if(fundAccount==null) {
+        PaymentInfo paymentInfo = paymentService.findById(info.getId());
+        if(paymentInfo==null) {
             return result.failure(ResultCode.RESULE_DATA_NONE);
         }
-        fundAccount = paymentService.update(fundAccount);
-        if(fundAccount==null) {
+        info = paymentService.update(info);
+        if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(fundAccount);
+        return result.success(info);
     }
-    @ApiOperation(value = "获取资金账户信息", notes = "获取资金账户信息", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/getFundAccount/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取付款项目信息", notes = "获取付款项目信息", tags = {"PAYMENT"})
+    @RequestMapping(value="/getPayment/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getUser(
+    public Result getPayment(
             @ApiParam(name = "id", value = "用户ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
@@ -179,11 +179,11 @@ public class PaymentController implements InitializingBean{
         }
         return result.success(info);
     }
-    @ApiOperation(value = "删除资金账户信息", notes = "删除资金账户信息", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/deleteFundAccount/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除付款项目信息", notes = "删除付款项目信息", tags = {"PAYMENT"})
+    @RequestMapping(value="/deletePayment/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result deleteUser(
-            @ApiParam(name = "id", value = "资金账户ID",example = "1", required = true) @PathVariable Long id) {
+    public Result deletePayment(
+            @ApiParam(name = "id", value = "付款项目ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
             result.setCode(10002);

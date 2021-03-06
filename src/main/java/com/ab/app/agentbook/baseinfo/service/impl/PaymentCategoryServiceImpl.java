@@ -20,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import com.ab.app.agentbook.baseinfo.dao.PaymentCategoryDao;
+import com.ab.app.agentbook.baseinfo.entity.AbIncomeCategoryItemEntity;
 import com.ab.app.agentbook.baseinfo.entity.AbPaymentCategoryItemEntity;
+import com.ab.app.agentbook.baseinfo.info.IncomeCategoryInfo;
 import com.ab.app.agentbook.baseinfo.info.PaymentCategoryInfo;
 import com.ab.app.agentbook.baseinfo.service.PaymentCategoryService;
 import com.ab.app.agentbook.data.crud.criteria.Criterion;
@@ -167,5 +169,15 @@ public class PaymentCategoryServiceImpl implements PaymentCategoryService,Initia
     public PaymentCategoryInfo findByCode(String fundcode) {
         AbPaymentCategoryItemEntity entity = paymentCategoryDao.findByCode(fundcode);
         return warp(entity);
+    }
+
+    @Override
+    public PaymentCategoryInfo[] findByParentId(Long id) {
+        List<AbPaymentCategoryItemEntity> entitys = paymentCategoryDao.findByParentid(id);
+        List<PaymentCategoryInfo> result = new ArrayList<PaymentCategoryInfo>();
+        for(AbPaymentCategoryItemEntity entity : entitys) {
+            result.add(warp(entity));
+        }
+        return result.toArray(new PaymentCategoryInfo[result.size()]);
     }
 }

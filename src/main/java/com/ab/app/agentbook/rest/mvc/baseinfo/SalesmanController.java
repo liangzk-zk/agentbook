@@ -67,12 +67,12 @@ public class SalesmanController implements InitializingBean{
             queryUserFieldMapping.put("selfcode", "selfcode");
         }
     }
-    @ApiOperation(value = "获取资金账户信息", notes = "获取资金账户信息", tags = {"Salesman"})
+    @ApiOperation(value = "获取业务员信息", notes = "获取业务员信息", tags = {"SALESMAN"})
     @RequestMapping(value="/getSalesmanList", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "获取资金账户信息成功"),
+            @ApiResponse(code = 200, message = "获取业务员信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用获取资金账户信息API内部报错") })
+            @ApiResponse(code = 500, message = "调用获取业务员信息API内部报错") })
     @ResponseBody
     public Result getSalesmanList(
             @ApiParam(name = "query", value = "查询列表参数", required = true)
@@ -91,7 +91,7 @@ public class SalesmanController implements InitializingBean{
             return result.success(queryResult);
         }
         if(StringUtils.isEmpty(orderBy)) {
-            orderBy = "createTime DESC";
+            orderBy = "createdate DESC";
         }
         SalesmanInfo[] datas = salesmanService.getSalesmans(criterions, startPosition,
                 maxResults, orderBy);
@@ -103,26 +103,26 @@ public class SalesmanController implements InitializingBean{
         queryResult.setTotal(count);
         return result.success(queryResult);
     }
-    @ApiOperation(value = "新增资金账户信息", notes = "新增资金账户信息", tags = {"Salesman"})
+    @ApiOperation(value = "新增业务员信息", notes = "新增业务员信息", tags = {"SALESMAN"})
     @RequestMapping(value="/addSalesman", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "新增资金账户信息成功"),
+            @ApiResponse(code = 200, message = "新增业务员信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用资金账户信息API内部报错") })
+            @ApiResponse(code = 500, message = "调用业务员信息API内部报错") })
     @ResponseBody
     public Result addSalesman(@RequestBody SalesmanInfo info) {
         Result result = new Result();
         SalesmanInfo parent = salesmanService.findByCode(info.getCode());
         if(parent!=null) {
-            result.setResultCode(ResultCode.ZZZH_HAS_EXISTED);
+            result.setResultCode(ResultCode.YWY_HAS_EXISTED);
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.YWY_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.YWY_INFO_NAME_IS_NULL);
             return result;
         }
         SalesmanInfo bean = salesmanService.save(info);
@@ -130,14 +130,14 @@ public class SalesmanController implements InitializingBean{
         result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
         return result;
     }
-    @ApiOperation(value = "更新资金账户信息", notes = "更新资金账户", tags = {"Salesman"})
+    @ApiOperation(value = "更新业务员信息", notes = "更新业务员", tags = {"SALESMAN"})
     @RequestMapping(value="/updateSalesman", method = RequestMethod.PUT)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "更新资金账户成功"),
+            @ApiResponse(code = 200, message = "更新业务员成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用更新资金账户API内部报错") })
+            @ApiResponse(code = 500, message = "调用更新业务员API内部报错") })
     @ResponseBody
-    public Result updateUser(@RequestBody SalesmanInfo info) {
+    public Result updateSalesman(@RequestBody SalesmanInfo info) {
         Result result = new Result();
         if(info.getId()==null) {
             result.setCode(10002);
@@ -145,27 +145,27 @@ public class SalesmanController implements InitializingBean{
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.YWY_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.YWY_INFO_NAME_IS_NULL);
             return result;
         }
-        SalesmanInfo Salesman = salesmanService.findById(info.getId());
-        if(Salesman==null) {
+        SalesmanInfo salesmanInfo = salesmanService.findById(info.getId());
+        if(salesmanInfo==null) {
             return result.failure(ResultCode.RESULE_DATA_NONE);
         }
-        Salesman = salesmanService.update(Salesman);
-        if(Salesman==null) {
+        info = salesmanService.update(info);
+        if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(Salesman);
+        return result.success(info);
     }
-    @ApiOperation(value = "获取资金账户信息", notes = "获取资金账户信息", tags = {"Salesman"})
+    @ApiOperation(value = "获取业务员信息", notes = "获取业务员信息", tags = {"SALESMAN"})
     @RequestMapping(value="/getSalesman/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getUser(
+    public Result getSalesman(
             @ApiParam(name = "id", value = "用户ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
@@ -179,11 +179,11 @@ public class SalesmanController implements InitializingBean{
         }
         return result.success(info);
     }
-    @ApiOperation(value = "删除资金账户信息", notes = "删除资金账户信息", tags = {"Salesman"})
+    @ApiOperation(value = "删除业务员信息", notes = "删除业务员信息", tags = {"SALESMAN"})
     @RequestMapping(value="/deleteSalesman/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result deleteUser(
-            @ApiParam(name = "id", value = "资金账户ID",example = "1", required = true) @PathVariable Long id) {
+    public Result deleteSalesman(
+            @ApiParam(name = "id", value = "业务员ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
             result.setCode(10002);

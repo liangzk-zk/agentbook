@@ -6,6 +6,7 @@ terms.
 */
 package com.ab.app.agentbook.baseinfo.service;
 
+import com.ab.app.agentbook.baseinfo.info.IncomeCategoryInfo;
 import com.ab.app.agentbook.baseinfo.info.PaymentCategoryInfo;
 import com.ab.app.agentbook.data.crud.criteria.Criterion;
 
@@ -35,5 +36,7 @@ public interface PaymentCategoryService {
     void removePaymentCategory(Long id);
 
     PaymentCategoryInfo findByCode(String fundcode);
+
+    PaymentCategoryInfo[] findByParentId(Long id);
 
 }

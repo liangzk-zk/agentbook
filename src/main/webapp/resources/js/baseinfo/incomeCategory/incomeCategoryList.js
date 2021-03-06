@@ -157,59 +157,156 @@ $(function() {
                 $(nRow).attr("id", aData.id);
                 $(nRow).attr("rowIndex", iDataIndex);
               }
-              $(nRow)
-                  .on(
-                      "click",
-                      function() {
-                        if ($(nRow).find("input[type='checkbox']").prop(
-                            "checked")) {
-                          // $(nRow).removeClass("selected");
-                          $(nRow).find("input[type='checkbox']").prop(
-                              "checked", false);
-                          if ($('#incomeCategoryList tbody tr input:checkbox[name="incomeCategoryListChk"]:checked').length == 0) {
-                            $("#allparameterList .rowSelected").addClass(
-                                "disabled");
-                          }
-                        } else {
-                          $("#incomeCategoryList").dataTable.$("tr.selected").find(
-                              "input[type='checkbox']").prop("checked", false);
-                          $("#incomeCategoryList").dataTable.$("tr.selected")
-                              .removeClass("selected");
-                          $(nRow).addClass("selected");
-                          $(nRow).find("input[type='checkbox']").prop(
-                              "checked", true);
-                        }
-                      });
+              $(nRow).on("click",function() {
+                if ($(nRow).find("input[type='checkbox']").prop(
+                    "checked")) {
+                  // $(nRow).removeClass("selected");
+                  $(nRow).find("input[type='checkbox']").prop(
+                      "checked", false);
+                  if ($('#incomeCategoryList tbody tr input:checkbox[name="incomeCategoryListChk"]:checked').length == 0) {
+                    $("#allparameterList .rowSelected").addClass(
+                        "disabled");
+                  }
+                } else {
+                  $("#incomeCategoryList").dataTable.$("tr.selected").find(
+                      "input[type='checkbox']").prop("checked", false);
+                  $("#incomeCategoryList").dataTable.$("tr.selected")
+                      .removeClass("selected");
+                  $(nRow).addClass("selected");
+                  $(nRow).find("input[type='checkbox']").prop(
+                      "checked", true);
+                }
+              });
             },
             "fnDrawCallback" : function(oSettings) {
-              $('button[cmd="editBtn"]')
-                  .click(
-                      function(e) {
-                        var rowIndex = $(this).parents("tr").index();
-                        var id = $('#incomeCategoryList').DataTable().row(rowIndex).data().id;
-                        var code = $('#incomeCategoryList').DataTable().row(rowIndex).data().code;
-                        var name = $('#incomeCategoryList').DataTable().row(rowIndex).data().name;
-                        var selfcode = $('#incomeCategoryList').DataTable().row(rowIndex).data().selfcode;
-                        var remarks = $('#incomeCategoryList').DataTable().row(rowIndex).data().remarks;
-                        $("#addRow").click(
-                            function() {
-                              $('#addRowModal').on(
-                                  'show.bs.modal',
-                                  function(event) {
-                                    var modal = $(this)
-                                    modal.find('#ids').val(id)
-                                    modal.find('#code').val(code)
-                                    modal.find('#name').val(name)
-                                    modal.find('#selfcode').val(selfcode)
-                                    modal.find('#remarks').val(remarks)
-                                  });
-                            });
-                        $("#addRow").click();
+              $("#addRow").click(function() {
+                $('#addRowModal').on(
+                    'show.bs.modal',
+                    function(event) {
+                      $("#parentClass").click(function(){
+                        $("#classifiTree").css("display","block");
+                        var settings = {
+                            check : {
+                              enable : true
+                            },
+                            view : {
+                              selectedMulti : false,
+                            // addHoverDom: addHoverDom,
+                            // removeHoverDom: removeHoverDom,
+                            },
+                            data : {
+                              key : {
+                                name : "name"
+                              },
+                              simpleData : {
+                                enable : true,
+                                idKey : "id",
+                                pIdKey : "pId"
+                              }
+                            },
+                            async : {
+                              enable : true,
+                              url : GlobalParam.context + "/rest/baseinfo/incomeCategory/getIncomeCategoryTreeList",
+                              autoParam : [ "id"],
+                              dataType : 'json'
+                            },
+                            callback: {
+                              onClick: function(event, treeId, treeNode){
+                                $("#parentId").val(treeNode.id);
+                                $("#parentClass").val(treeNode.name);
+                                $("#classifiTree").css("display","none");
+                              }
+                            }
+                        };
+                        $.ajax({
+                          type : "POST",
+                          url : GlobalParam.context + "/rest/baseinfo/incomeCategory/getIncomeCategoryTreeList",
+                          async:true,
+                          data : {
+                            id:1,
+                            isRoot:true
+                          },
+                          dataType: "json",
+                          success : function(ret) {
+                            if (ret) {
+                              ztreeObj = $.fn.zTree.init($("#classifiTree"), settings,ret);
+                              var nodes = ztreeObj.getNodes();
+                              ztreeObj.expandNode(nodes[0], true, false, false);
+                            }
+                          }
+                        });
                       });
+                    });
+              });
+              $('button[cmd="editBtn"]').click(function(e) {
+                var rowIndex = $(this).parents("tr").index();
+                var id = $('#incomeCategoryList').DataTable().row(rowIndex).data().id;
+                var parentId = $('#incomeCategoryList').DataTable().row(rowIndex).data().parentid;
+                var code = $('#incomeCategoryList').DataTable().row(rowIndex).data().code;
+                var name = $('#incomeCategoryList').DataTable().row(rowIndex).data().name;
+                var selfcode = $('#incomeCategoryList').DataTable().row(rowIndex).data().selfcode;
+                var remarks = $('#incomeCategoryList').DataTable().row(rowIndex).data().remarks;
+                $("#addRow").click(
+                    function() {
+                      $('#addRowModal').on(
+                          'show.bs.modal',
+                          function(event) {
+                            var modal = $(this)
+                            modal.find('#id').val(id)
+                            modal.find('#parentId').val(id)
+                            modal.find('#code').val(code)
+                            modal.find('#name').val(name)
+                            modal.find('#selfcode').val(selfcode)
+                            modal.find('#remarks').val(remarks)
+                          });
+                    });
+                $("#addRow").click();
+              });
+              $('button[cmd="deleteBtn"]').click(function(e) {
+                var rowIndex = $(this).parents("tr").index();
+                var id = $('#incomeCategoryList').DataTable().row(rowIndex).data().id; 
+                swal({
+                      title : '确认删除',
+                      html : true,
+                      text : "是否确认删除？",
+                      buttons : {
+                        cancel: {
+                          visible: true,
+                          className: 'btn btn-danger'
+                        }, 
+                        confirm : {
+                          className : 'btn btn-success'
+                        }
+                      },
+                    }).then((Delete) => {
+                      if (Delete) {
+                        $.ajax({
+                          type : "DELETE",
+                          url : GlobalParam.context + "/rest/baseinfo/incomeCategory/deleteIncomeCategory/"+id,
+                          contentType : 'application/json',
+                          success : function(ret) {
+                            $('#incomeCategoryList').DataTable().draw(true);
+                            swal({
+                              title : '提示',
+                              text: ret.msg,
+                              buttons : {
+                                confirm : {
+                                  className : 'btn btn-success'
+                                }
+                              },
+                            });
+                          }
+                        });
+                      } else {
+                        swal.close();
+                      }
+                    });
+              });
             }
           });
   $("#addButton").click(function(e) {
     var id = $("#id").val();
+    var parentid = $("#parentId").val();
     var code = $("#code").val();
     var name = $("#name").val();
     var selfcode = $("#selfcode").val();
@@ -222,7 +319,7 @@ $(function() {
       url = GlobalParam.context + "/rest/baseinfo/incomeCategory/updateIncomeCategory";
       text = "更新成功！";
     }
-    if (!fundcode) {
+    if (!code) {
       swal({
         title : '提示',
         text : "编码不允许为空！",
@@ -233,7 +330,7 @@ $(function() {
         },
       });
     }
-    if (!fundname) {
+    if (!name) {
       swal({
         title : '提示',
         text : "名称不允许为空！",
@@ -246,6 +343,7 @@ $(function() {
     }
     var data = {
       "id" : id,
+      "parentid" : parentid,
       "code" : code,
       "name" : name,
       "selfcode" : selfcode,
@@ -257,29 +355,20 @@ $(function() {
       data : JSON.stringify(data),
       contentType : 'application/json',
       success : function(ret) {
-        if (ret.code == 200) {
+        if (ret.code == 70004 || ret.code == 70005) {
           $('#incomeCategoryList').DataTable().draw(true);
           $('#addRowModal').modal('hide');
-          swal({
-            title : '提示',
-            text : text,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
-        } else {
-          swal({
-            title : '提示',
-            text : ret.msg,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
         }
+        swal({
+          title : '提示',
+          text : ret.msg,
+          buttons : {
+            confirm : {
+              className : 'btn btn-success'
+            }
+          },
+        });
+      
       }
     });
   });

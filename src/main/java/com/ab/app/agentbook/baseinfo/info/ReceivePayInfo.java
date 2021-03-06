@@ -25,6 +25,10 @@ public class ReceivePayInfo implements Serializable{
      */
     private Long receivepaytype;
     /**
+     * 收款项目类别名称
+     */
+    private String receivepayname;
+    /**
      * 收款项目名称
      */
     private String name;
@@ -107,5 +111,13 @@ public class ReceivePayInfo implements Serializable{
 
     public void setIscommission(Short iscommission) {
         this.iscommission = iscommission;
+    }
+
+    public void setReceivepayname(String receivepayname) {
+        this.receivepayname = receivepayname;
+    }
+
+    public String getReceivepayname() {
+        return receivepayname;
     }
 }

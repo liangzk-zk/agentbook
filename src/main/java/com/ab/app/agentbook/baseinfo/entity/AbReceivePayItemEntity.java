@@ -23,6 +23,10 @@ public class AbReceivePayItemEntity {
      */
     private Long receivepaytype;
     /**
+     *  收款项目类别名称
+     */
+    private String receivepayname;
+    /**
      * 收款项目名称
      */
     private String name;
@@ -72,6 +76,15 @@ public class AbReceivePayItemEntity {
 
     public void setReceivepaytype(Long receivepaytype) {
         this.receivepaytype = receivepaytype;
+    }
+    @Basic
+    @Column(name = "RECEIVEPAYNAME", nullable = true)
+    public String getReceivepayname() {
+        return receivepayname;
+    }
+
+    public void setReceivepayname(String receivepayname) {
+        this.receivepayname = receivepayname;
     }
 
     @Basic

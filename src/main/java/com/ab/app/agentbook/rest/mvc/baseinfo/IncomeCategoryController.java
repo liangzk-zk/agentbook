@@ -29,13 +29,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ab.app.agentbook.baseinfo.info.IncomeCategoryInfo;
 import com.ab.app.agentbook.baseinfo.service.IncomeCategoryService;
 import com.ab.app.agentbook.common.tree.bean.TreeNodeWithChild;
-import com.ab.app.agentbook.company.info.AbTransactionInfo;
 import com.ab.app.agentbook.data.crud.criteria.Criterion;
 import com.ab.app.agentbook.jpa.ws.Expression;
 import com.ab.app.agentbook.rest.enums.ResultCode;
 import com.ab.app.agentbook.rest.query.InfoQuery;
 import com.ab.app.agentbook.rest.query.InfoQueryResult;
 import com.ab.app.agentbook.rest.query.Result;
+import com.ab.app.agentbook.security.user.info.User;
+import com.ab.app.agentbook.security.user.info.UserInfo;
 import com.ab.app.agentbook.util.CriterionUtil;
 
 import io.swagger.annotations.Api;
@@ -71,18 +72,18 @@ public class IncomeCategoryController implements InitializingBean{
         }
     }
     @ApiOperation(value = "获取收款项目类型信息", notes = "获取收款项目类型信息", tags = {"INCONMECATEGORY"})
-    @RequestMapping(value="/getIncomeCategoryList", method = RequestMethod.POST)
+    @RequestMapping(value="/getIncomeCategoryTreeList", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "获取收款项目类型信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
             @ApiResponse(code = 500, message = "调用获取收款项目类型信息API内部报错") })
     @ResponseBody
-    public TreeNodeWithChild[] getIncomeCategoryList(@RequestParam(value="id") long id) {
-        
+    public TreeNodeWithChild[] getIncomeCategoryTreeList(@RequestParam(value="id") long id,@RequestParam(value="isRoot",required = false) boolean isRoot) {
+
         IncomeCategoryInfo parent = incomeCategoryService.findById(id);
         List<TreeNodeWithChild> result = new ArrayList<TreeNodeWithChild>();
         IncomeCategoryInfo[] child = incomeCategoryService.findByParentId(parent.getId());
-        if(id==1) {
+        if(isRoot) {
             TreeNodeWithChild info = new TreeNodeWithChild();
             info.setId(String.valueOf(parent.getId()));
             info.setName(parent.getName());
@@ -93,7 +94,7 @@ public class IncomeCategoryController implements InitializingBean{
                 childInfo.add(warp(c,parent.getId()));
             }
             info.setChildren(childInfo.toArray(new TreeNodeWithChild[childInfo.size()]));
-            result.add(info); 
+            result.add(info);
         }else {
             for(IncomeCategoryInfo c:child) {
                 result.add(warp(c,parent.getId()));
@@ -101,41 +102,70 @@ public class IncomeCategoryController implements InitializingBean{
         }
         return result.toArray(new TreeNodeWithChild[result.size()]);
     }
-    @ApiOperation(value = "新增资金账户信息", notes = "新增资金账户信息", tags = {"FUNDACCOUNT"})
+    
+    @ApiOperation(value = "获取收款项目类型列表信息", notes = "获取收款项目类型列表信息", tags = {"INCONMECATEGORY"})
+    @RequestMapping(value="/getIncomeCategoryList", method = RequestMethod.POST,produces="application/json")
+    @ResponseBody
+    public Result getIncomeCategoryList(
+            @ApiParam(name = "query", value = "查询列表参数", required = true)
+            @RequestBody InfoQuery query) {
+        Result result = new Result();
+        InfoQueryResult<IncomeCategoryInfo> queryResult = new InfoQueryResult<IncomeCategoryInfo>();
+        Expression[] expressions = query.getExpressions();
+        String orderBy = query.getOrderBy();
+        int startPosition = query.getStartPosition();
+        int maxResults = query.getMaxResults();
+        Criterion[] criterions = CriterionUtil.toCriterions(expressions,queryUserFieldMapping);
+        int count = incomeCategoryService.getIncomeCategoryCount(criterions);
+        if (count == 0) {
+            queryResult.setDatas(new IncomeCategoryInfo[0]);
+            queryResult.setTotal(count);
+            return result.success(queryResult);
+        }
+        if(StringUtils.isEmpty(orderBy)) {
+            orderBy = "createdate DESC";
+        }
+        IncomeCategoryInfo[] datas = incomeCategoryService.getIncomeCategorys(criterions, startPosition,
+                maxResults, orderBy);
+        queryResult.setDatas(datas);
+        queryResult.setTotal(count);
+        return result.success(queryResult);
+    }
+    @ApiOperation(value = "新增收款项目类别信息", notes = "新增收款项目类别信息", tags = {"INCONMECATEGORY"})
     @RequestMapping(value="/addIncomeCategory", method = RequestMethod.POST)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "新增资金账户信息成功"),
+            @ApiResponse(code = 200, message = "新增收款项目类别信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用资金账户信息API内部报错") })
+            @ApiResponse(code = 500, message = "调用收款项目类别信息API内部报错") })
     @ResponseBody
     public Result addIncomeCategory(@RequestBody IncomeCategoryInfo info) {
         Result result = new Result();
         IncomeCategoryInfo parent = incomeCategoryService.findByCode(info.getCode());
         if(parent!=null) {
-            result.setResultCode(ResultCode.ZZZH_HAS_EXISTED);
+            result.setResultCode(ResultCode.SKXMLB_HAS_EXISTED);
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.SKXMLB_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.SKXMLB_INFO_NAME_IS_NULL);
             return result;
         }
         IncomeCategoryInfo bean = incomeCategoryService.save(info);
         result.setData(bean);
-        result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
+        result.setResultCode(ResultCode.SKXMLB_INFO_SAVE_SUCCESS);
         return result;
     }
-    @ApiOperation(value = "更新资金账户信息", notes = "更新资金账户", tags = {"IncomeCategory"})
+    @ApiOperation(value = "更新收款项目类别信息", notes = "更新收款项目类别", tags = {"INCONMECATEGORY"})
     @RequestMapping(value="/updateIncomeCategory", method = RequestMethod.PUT)
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "更新资金账户成功"),
+            @ApiResponse(code = 200, message = "更新收款项目类别成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
-            @ApiResponse(code = 500, message = "调用更新资金账户API内部报错") })
+            @ApiResponse(code = 500, message = "调用更新收款项目类别API内部报错") })
     @ResponseBody
-    public Result updateUser(@RequestBody IncomeCategoryInfo info) {
+    public Result updateIncomeCategory(@RequestBody IncomeCategoryInfo info) {
         Result result = new Result();
         if(info.getId()==null) {
             result.setCode(10002);
@@ -143,27 +173,29 @@ public class IncomeCategoryController implements InitializingBean{
             return result;
         }
         if(StringUtils.isBlank(info.getCode())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_CODE_IS_NULL);
+            result.setResultCode(ResultCode.SKXMLB_INFO_CODE_IS_NULL);
             return result;
         }
         if(StringUtils.isBlank(info.getName())) {
-            result.setResultCode(ResultCode.ZZZH_INFO_NAME_IS_NULL);
+            result.setResultCode(ResultCode.SKXMLB_INFO_NAME_IS_NULL);
             return result;
         }
-        IncomeCategoryInfo IncomeCategory = incomeCategoryService.findById(info.getId());
-        if(IncomeCategory==null) {
+        IncomeCategoryInfo incomeCategory = incomeCategoryService.findById(info.getId());
+        if(incomeCategory==null) {
             return result.failure(ResultCode.RESULE_DATA_NONE);
         }
-        IncomeCategory = incomeCategoryService.update(IncomeCategory);
-        if(IncomeCategory==null) {
+        info = incomeCategoryService.update(info);
+        if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(IncomeCategory);
+        result.setData(info);
+        result.setResultCode(ResultCode.SKXMLB_INFO_UPDATE_SUCCESS);
+        return result;
     }
-    @ApiOperation(value = "获取资金账户信息", notes = "获取资金账户信息", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/getFundAccount/{id}", method = RequestMethod.GET)
+    @ApiOperation(value = "获取收款项目类别信息", notes = "获取收款项目类别信息", tags = {"INCONMECATEGORY"})
+    @RequestMapping(value="/getIncomeCategory/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public Result getUser(
+    public Result getIncomeCategory(
             @ApiParam(name = "id", value = "用户ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
@@ -177,11 +209,11 @@ public class IncomeCategoryController implements InitializingBean{
         }
         return result.success(info);
     }
-    @ApiOperation(value = "删除资金账户信息", notes = "删除资金账户信息", tags = {"FUNDACCOUNT"})
-    @RequestMapping(value="/deleteFundAccount/{id}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "删除收款项目类别信息", notes = "删除收款项目类别信息", tags = {"INCONMECATEGORY"})
+    @RequestMapping(value="/deleteIncomeCategory/{id}", method = RequestMethod.DELETE)
     @ResponseBody
-    public Result deleteUser(
-            @ApiParam(name = "id", value = "资金账户ID",example = "1", required = true) @PathVariable Long id) {
+    public Result deleteIncomeCategory(
+            @ApiParam(name = "id", value = "收款项目类别ID",example = "1", required = true) @PathVariable Long id) {
         Result result = new Result();
         if(id==null) {
             result.setCode(10002);
