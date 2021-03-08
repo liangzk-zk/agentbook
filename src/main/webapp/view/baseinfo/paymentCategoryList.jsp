@@ -31,7 +31,7 @@
         <div class="card">
           <div class="card-header">
             <div class="d-flex align-items-center">
-              <button class="btn btn-primary btn-round ml-auto" style="display:none" id="addRow" data-toggle="modal" data-target="#addRowModal">
+              <button class="btn btn-primary btn-round ml-auto" id="addRow" data-toggle="modal" data-target="#addRowModal">
                 <i class="fa fa-plus"></i> 新增
               </button>
             </div>
@@ -65,6 +65,18 @@
                                         <div class="form-group form-group-default">
                                             <label>名称</label>
                                             <input id="name" type="text" class="form-control" placeholder="名称">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <em style="color: red;">*</em> <label>所属分类</label> <input id="parentClass" type="text"
+                                            class="form-control" placeholder="所属分类"> <input id="parentId" type="hidden"
+                                            style="display: none" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                          <ul class="ztree" id="classifiTree" style="display: none"></ul>
                                         </div>
                                     </div>
                                     <div class="col-sm-12">

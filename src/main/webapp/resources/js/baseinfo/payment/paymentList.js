@@ -4,6 +4,54 @@ $(function() {
     selfcode : "selfcode",
     name : "name"
   };
+  var loadTreeObj = function () {
+    var ztreeObj;
+    var settings = {
+        check: {
+            enable: true
+        },
+        view: {
+            selectedMulti: false,
+            // addHoverDom: addHoverDom,
+            // removeHoverDom: removeHoverDom,
+        },
+        data: {
+            key: {
+                name: "name"
+            },
+            simpleData: {
+                enable: true,
+                idKey: "id",
+                pIdKey: "pId"
+            }
+        },
+        async: {
+            enable: true,
+            url: GlobalParam.context + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+            autoParam: ["id"],
+            dataType: 'json'
+        },
+    };
+    $.ajax({
+        type: "POST",
+        url: GlobalParam.context + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+        async: true,
+        data: {
+            id: 1,
+            isRoot: true
+        },
+        dataType: "json",
+        success: function (ret) {
+            if (ret) {
+                ztreeObj = $.fn.zTree.init($("#paymentCategoryTree"), settings, ret);
+                var nodes = ztreeObj.getNodes();
+                ztreeObj.expandNode(nodes[0], true, false, false);
+            }
+        }
+    });
+    return ztreeObj;
+};
+var paymentCategoryObj = loadTreeObj();
   $("#paymentList")
       .DataTable(
           {
@@ -182,6 +230,90 @@ $(function() {
                       });
             },
             "fnDrawCallback" : function(oSettings) {
+              $('#addPaymentCategoryInfoModal')
+              .on(
+                  'hidden.bs.modal',
+                  function(event) {
+                    loadTreeObj();
+                  });
+              $("#addRow")
+              .click(
+                  function() {
+                    $('#addRowModal')
+                        .on(
+                            'show.bs.modal',
+                            function(event) {
+                              $("#paytypename")
+                                  .click(
+                                      function() {
+                                        $("#classifiTree").css("display",
+                                            "block");
+                                        var settings = {
+                                          check : {
+                                            enable : true
+                                          },
+                                          view : {
+                                            selectedMulti : false,
+                                          // addHoverDom: addHoverDom,
+                                          // removeHoverDom: removeHoverDom,
+                                          },
+                                          data : {
+                                            key : {
+                                              name : "name"
+                                            },
+                                            simpleData : {
+                                              enable : true,
+                                              idKey : "id",
+                                              pIdKey : "pId"
+                                            }
+                                          },
+                                          async : {
+                                            enable : true,
+                                            url : GlobalParam.context
+                                                + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+                                            autoParam : [ "id" ],
+                                            dataType : 'json'
+                                          },
+                                          callback : {
+                                            onClick : function(event,
+                                                treeId, treeNode) {
+                                              $("#paytype").val(
+                                                  treeNode.id);
+                                              $("#paytypename").val(
+                                                  treeNode.name);
+                                              $("#classifiTree").css(
+                                                  "display", "none");
+                                            }
+                                          }
+                                        };
+                                        $
+                                            .ajax({
+                                              type : "POST",
+                                              url : GlobalParam.context
+                                                  + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+                                              async : true,
+                                              data : {
+                                                id : 1,
+                                                isRoot : true
+                                              },
+                                              dataType : "json",
+                                              success : function(ret) {
+                                                if (ret) {
+                                                  ztreeObj = $.fn.zTree
+                                                      .init(
+                                                          $("#classifiTree"),
+                                                          settings, ret);
+                                                  var nodes = ztreeObj
+                                                      .getNodes();
+                                                  ztreeObj.expandNode(
+                                                      nodes[0], true,
+                                                      false, false);
+                                                }
+                                              }
+                                            });
+                                      });
+                            });
+                  });
               $('button[cmd="editBtn"]')
                   .click(
                       function(e) {
@@ -190,6 +322,7 @@ $(function() {
                         var code = $('#paymentList').DataTable().row(rowIndex).data().code;
                         var name = $('#paymentList').DataTable().row(rowIndex).data().name;
                         var paytype = $('#paymentList').DataTable().row(rowIndex).data().paytype;
+                        var paytypename = $('#paymentList').DataTable().row(rowIndex).data().paytypename;
                         var remarks = $('#paymentList').DataTable().row(rowIndex).data().remarks;
                         $("#addRow").click(
                             function() {
@@ -197,15 +330,56 @@ $(function() {
                                   'show.bs.modal',
                                   function(event) {
                                     var modal = $(this)
-                                    modal.find('#ids').val(id)
+                                    modal.find('#id').val(id)
                                     modal.find('#code').val(code)
                                     modal.find('#name').val(name)
                                     modal.find('#paytype').val(paytype)
+                                    modal.find('#paytypename').val(paytypename)
                                     modal.find('#remarks').val(remarks)
                                   });
                             });
                         $("#addRow").click();
                       });
+              $('button[cmd="deleteBtn"]').click(function(e) {
+                var rowIndex = $(this).parents("tr").index();
+                var id = $('#paymentList').DataTable().row(rowIndex).data().id; 
+                swal({
+                      title : '确认删除',
+                      html : true,
+                      text : "是否确认删除？",
+                      buttons : {
+                        cancel: {
+                          visible: true,
+                          className: 'btn btn-danger'
+                        }, 
+                        confirm : {
+                          className : 'btn btn-success'
+                        }
+                      },
+                    }).then((Delete) => {
+                      if (Delete) {
+                        $.ajax({
+                          type : "DELETE",
+                          url : GlobalParam.context + "/rest/baseinfo/payment/deletePayment/"+id,
+                          contentType : 'application/json',
+                          success : function(ret) {
+                            $('#paymentList').DataTable().draw(true);
+                            swal({
+                              title : '提示',
+                              text: ret.msg,
+                              buttons : {
+                                confirm : {
+                                  className : 'btn btn-success'
+                                }
+                              },
+                            });
+                          }
+                        });
+                      } else {
+                        swal.close();
+                      }
+                    });
+              });
             }
           });
   $("#addButton").click(function(e) {
@@ -213,6 +387,7 @@ $(function() {
     var code = $("#code").val();
     var name = $("#name").val();
     var paytype = $("#paytype").val();
+    var paytypename = $("#paytypename").val();
     var remarks = $("#remarks").val();
     var url = GlobalParam.context + "/rest/baseinfo/payment/addPayment";
     var type = "POST";
@@ -222,7 +397,7 @@ $(function() {
       url = GlobalParam.context + "/rest/baseinfo/payment/updatePayment";
       text = "更新成功！";
     }
-    if (!fundcode) {
+    if (!code) {
       swal({
         title : '提示',
         text : "编码不允许为空！",
@@ -233,7 +408,18 @@ $(function() {
         },
       });
     }
-    if (!fundname) {
+    if (!paytype) {
+      swal({
+        title : '提示',
+        text : "所属分类不允许为空！",
+        buttons : {
+          confirm : {
+            className : 'btn btn-success'
+          }
+        },
+      });
+    }
+    if (!name) {
       swal({
         title : '提示',
         text : "名称不允许为空！",
@@ -249,6 +435,7 @@ $(function() {
       "code" : code,
       "name" : name,
       "paytype" : paytype,
+      "paytypename" : paytypename,
       "remarks": remarks
     };
     $.ajax({
@@ -257,29 +444,19 @@ $(function() {
       data : JSON.stringify(data),
       contentType : 'application/json',
       success : function(ret) {
-        if (ret.code == 200) {
+        if (ret.code == 100004 || ret.code == 100005) {
           $('#paymentList').DataTable().draw(true);
           $('#addRowModal').modal('hide');
-          swal({
-            title : '提示',
-            text : text,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
-        } else {
-          swal({
-            title : '提示',
-            text : ret.msg,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
         }
+        swal({
+          title : '提示',
+          text : ret.msg,
+          buttons : {
+            confirm : {
+              className : 'btn btn-success'
+            }
+          },
+        });
       }
     });
   });

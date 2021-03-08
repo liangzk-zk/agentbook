@@ -47,7 +47,7 @@ public class ReceivePayInfo implements Serializable{
     /**
      * 是否计算提成
      */
-    private Short iscommission;
+    private Double iscommission;
 
     public Long getId() {
         return id;
@@ -105,11 +105,11 @@ public class ReceivePayInfo implements Serializable{
         this.remarks = remarks;
     }
 
-    public Short getIscommission() {
+    public Double getIscommission() {
         return iscommission;
     }
 
-    public void setIscommission(Short iscommission) {
+    public void setIscommission(Double iscommission) {
         this.iscommission = iscommission;
     }
 

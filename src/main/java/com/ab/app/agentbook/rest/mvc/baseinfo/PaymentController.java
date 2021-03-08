@@ -127,7 +127,7 @@ public class PaymentController implements InitializingBean{
         }
         PaymentInfo bean = paymentService.save(info);
         result.setData(bean);
-        result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
+        result.setResultCode(ResultCode.FKXM_INFO_SAVE_SUCCESS);
         return result;
     }
     @ApiOperation(value = "更新付款项目信息", notes = "更新付款项目", tags = {"PAYMENT"})
@@ -160,7 +160,9 @@ public class PaymentController implements InitializingBean{
         if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(info);
+        result.setData(info);
+        result.setResultCode(ResultCode.FKXM_INFO_UPDATE_SUCCESS);
+        return result;
     }
     @ApiOperation(value = "获取付款项目信息", notes = "获取付款项目信息", tags = {"PAYMENT"})
     @RequestMapping(value="/getPayment/{id}", method = RequestMethod.GET)

@@ -160,7 +160,9 @@ public class ReceivePayController implements InitializingBean{
         if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(info);
+        result.setData(info);
+        result.setResultCode(ResultCode.SKXM_INFO_UPDATE_SUCCESS);
+        return result;
     }
     @ApiOperation(value = "获取收款项目信息", notes = "获取收款项目信息", tags = {"RECEIVEPAY"})
     @RequestMapping(value="/getReceivePay/{id}", method = RequestMethod.GET)

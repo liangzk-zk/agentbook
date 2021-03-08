@@ -160,7 +160,7 @@ public class PaymentCategoryController implements InitializingBean{
         }
         PaymentCategoryInfo bean = paymentCategoryService.save(info);
         result.setData(bean);
-        result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
+        result.setResultCode(ResultCode.FKXMLB_INFO_SAVE_SUCCESS);
         return result;
     }
     @ApiOperation(value = "更新付款项目类别信息", notes = "更新付款项目类别", tags = {"PAYMENTCATEGORY"})
@@ -193,7 +193,9 @@ public class PaymentCategoryController implements InitializingBean{
         if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(info);
+        result.setData(info);
+        result.setResultCode(ResultCode.FKXMLB_INFO_UPDATE_SUCCESS);
+        return result;
     }
     @ApiOperation(value = "获取付款项目类别信息", notes = "获取付款项目类别信息", tags = {"PAYMENTCATEGORY"})
     @RequestMapping(value="/getPaymentCategory/{id}", method = RequestMethod.GET)

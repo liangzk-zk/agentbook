@@ -23,6 +23,10 @@ public class AbPaymentItemEntity {
      */
     private Long paytype;
     /**
+     * 支出类型名称
+     */
+    private String paytypename;
+    /**
      * 付款项目名称
      */
     private String name;
@@ -79,6 +83,15 @@ public class AbPaymentItemEntity {
     public void setName(String name) {
         this.name = name;
     }
+    @Basic
+    @Column(name = "PAYTYPENAME", nullable = true, length = 255)
+    public String getPaytypename() {
+        return paytypename;
+    }
+
+    public void setPaytypename(String paytypename) {
+        this.paytypename = paytypename;
+    }
 
     @Basic
     @Column(name = "CREATEDATE", nullable = true)
@@ -119,6 +132,7 @@ public class AbPaymentItemEntity {
                 Objects.equals(code, that.code) &&
                 Objects.equals(paytype, that.paytype) &&
                 Objects.equals(name, that.name) &&
+                Objects.equals(paytypename, that.paytypename) &&
                 Objects.equals(createdate, that.createdate) &&
                 Objects.equals(modifydate, that.modifydate) &&
                 Objects.equals(remarks, that.remarks);
@@ -126,6 +140,6 @@ public class AbPaymentItemEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, paytype, name, createdate, modifydate, remarks);
+        return Objects.hash(id, code, paytype, name, paytype, createdate, modifydate, remarks);
     }
 }

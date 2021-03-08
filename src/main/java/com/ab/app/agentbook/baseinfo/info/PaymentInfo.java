@@ -1,7 +1,4 @@
 package com.ab.app.agentbook.baseinfo.info;
-
-import javax.persistence.*;
-
 import java.io.Serializable;
 /**
  * 付款项目
@@ -12,7 +9,7 @@ public class PaymentInfo implements Serializable{
     /**
      * 
      */
-    private static final long serialVersionUID = -8455030288685035720L;
+    private static final long serialVersionUID = -3900112260858443574L;
     /**
      * 主键ID
      */
@@ -25,6 +22,10 @@ public class PaymentInfo implements Serializable{
      * 支出类型
      */
     private Long paytype;
+    /**
+     * 支出类型名称
+     */
+    private String paytypename;
     /**
      * 付款项目名称
      */
@@ -97,4 +98,13 @@ public class PaymentInfo implements Serializable{
     public void setRemarks(String remarks) {
         this.remarks = remarks;
     }
+
+    public String getPaytypename() {
+        return paytypename;
+    }
+
+    public void setPaytypename(String paytypename) {
+        this.paytypename = paytypename;
+    }
+    
 }

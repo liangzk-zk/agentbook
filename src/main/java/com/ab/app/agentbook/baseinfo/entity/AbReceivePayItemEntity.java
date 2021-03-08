@@ -45,7 +45,7 @@ public class AbReceivePayItemEntity {
     /**
      * 是否计算提成
      */
-    private Short iscommission;
+    private Double iscommission;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -129,11 +129,11 @@ public class AbReceivePayItemEntity {
 
     @Basic
     @Column(name = "ISCOMMISSION", nullable = true)
-    public Short getIscommission() {
+    public Double getIscommission() {
         return iscommission;
     }
 
-    public void setIscommission(Short iscommission) {
+    public void setIscommission(Double iscommission) {
         this.iscommission = iscommission;
     }
 

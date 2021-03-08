@@ -128,7 +128,7 @@ $(function() {
               };
               $.ajax({
                 type : "POST",
-                url : GlobalParam.context + "/rest/baseinfo/salesman/getsalesmanList",
+                url : GlobalParam.context + "/rest/baseinfo/salesman/getSalesmanList",
                 data : JSON.stringify(data),
                 contentType : 'application/json',
                 success : function(ret) {
@@ -222,7 +222,7 @@ $(function() {
       url = GlobalParam.context + "/rest/baseinfo/salesman/updatesalesman";
       text = "更新成功！";
     }
-    if (!fundcode) {
+    if (!code) {
       swal({
         title : '提示',
         text : "编码不允许为空！",
@@ -233,7 +233,7 @@ $(function() {
         },
       });
     }
-    if (!fundname) {
+    if (!name) {
       swal({
         title : '提示',
         text : "名称不允许为空！",
@@ -246,8 +246,8 @@ $(function() {
     }
     var data = {
       "id" : id,
-      code" : code,
-      "fundname" : fundname,
+      "code" : code,
+      "name" : name,
       "selfcode" : selfcode,
       "intialamount" : intialamount,
       "remarks": remarks

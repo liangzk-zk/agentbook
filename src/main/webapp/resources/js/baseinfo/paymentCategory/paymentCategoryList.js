@@ -182,6 +182,65 @@ $(function() {
                       });
             },
             "fnDrawCallback" : function(oSettings) {
+              $("#addRow").click(function() {
+                $('#addRowModal').on(
+                    'show.bs.modal',
+                    function(event) {
+                      $("#parentClass").click(function(){
+                        $("#classifiTree").css("display","block");
+                        var settings = {
+                            check : {
+                              enable : true
+                            },
+                            view : {
+                              selectedMulti : false,
+                            // addHoverDom: addHoverDom,
+                            // removeHoverDom: removeHoverDom,
+                            },
+                            data : {
+                              key : {
+                                name : "name"
+                              },
+                              simpleData : {
+                                enable : true,
+                                idKey : "id",
+                                pIdKey : "pId"
+                              }
+                            },
+                            async : {
+                              enable : true,
+                              url : GlobalParam.context + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+                              autoParam : [ "id"],
+                              dataType : 'json'
+                            },
+                            callback: {
+                              onClick: function(event, treeId, treeNode){
+                                $("#parentId").val(treeNode.id);
+                                $("#parentClass").val(treeNode.name);
+                                $("#classifiTree").css("display","none");
+                              }
+                            }
+                        };
+                        $.ajax({
+                          type : "POST",
+                          url : GlobalParam.context + "/rest/baseinfo/paymentCategory/getPaymentCategoryTreeList",
+                          async:true,
+                          data : {
+                            id:1,
+                            isRoot:true
+                          },
+                          dataType: "json",
+                          success : function(ret) {
+                            if (ret) {
+                              ztreeObj = $.fn.zTree.init($("#classifiTree"), settings,ret);
+                              var nodes = ztreeObj.getNodes();
+                              ztreeObj.expandNode(nodes[0], true, false, false);
+                            }
+                          }
+                        });
+                      });
+                    });
+              });
               $('button[cmd="editBtn"]')
                   .click(
                       function(e) {
@@ -189,6 +248,7 @@ $(function() {
                         var id = $('#paymentCategoryList').DataTable().row(rowIndex).data().id;
                         var code = $('#paymentCategoryList').DataTable().row(rowIndex).data().code;
                         var name = $('#paymentCategoryList').DataTable().row(rowIndex).data().name;
+                        var parentId = $('#paymentCategoryList').DataTable().row(rowIndex).data().parentid;
                         var selfcode = $('#paymentCategoryList').DataTable().row(rowIndex).data().selfcode;
                         var remarks = $('#paymentCategoryList').DataTable().row(rowIndex).data().remarks;
                         $("#addRow").click(
@@ -197,21 +257,63 @@ $(function() {
                                   'show.bs.modal',
                                   function(event) {
                                     var modal = $(this)
-                                    modal.find('#ids').val(id)
+                                    modal.find('#id').val(id)
                                     modal.find('#code').val(code)
                                     modal.find('#name').val(name)
+                                    modal.find('#parentId').val(parentId)
                                     modal.find('#selfcode').val(selfcode)
                                     modal.find('#remarks').val(remarks)
                                   });
                             });
                         $("#addRow").click();
                       });
+              $('button[cmd="deleteBtn"]').click(function(e) {
+                var rowIndex = $(this).parents("tr").index();
+                var id = $('#paymentCategoryList').DataTable().row(rowIndex).data().id; 
+                swal({
+                      title : '确认删除',
+                      html : true,
+                      text : "是否确认删除？",
+                      buttons : {
+                        cancel: {
+                          visible: true,
+                          className: 'btn btn-danger'
+                        }, 
+                        confirm : {
+                          className : 'btn btn-success'
+                        }
+                      },
+                    }).then((Delete) => {
+                      if (Delete) {
+                        $.ajax({
+                          type : "DELETE",
+                          url : GlobalParam.context + "/rest/baseinfo/incomeCategory/deleteIncomeCategory/"+id,
+                          contentType : 'application/json',
+                          success : function(ret) {
+                            $('#paymentCategoryList').DataTable().draw(true);
+                            swal({
+                              title : '提示',
+                              text: ret.msg,
+                              buttons : {
+                                confirm : {
+                                  className : 'btn btn-success'
+                                }
+                              },
+                            });
+                          }
+                        });
+                      } else {
+                        swal.close();
+                      }
+                    });
+              });
             }
           });
   $("#addButton").click(function(e) {
     var id = $("#id").val();
     var code = $("#code").val();
     var name = $("#name").val();
+    var parentid = $("#parentId").val();
     var selfcode = $("#selfcode").val();
     var remarks = $("#remarks").val();
     var url = GlobalParam.context + "/rest/baseinfo/paymentCategory/addPaymentCategory";
@@ -222,7 +324,7 @@ $(function() {
       url = GlobalParam.context + "/rest/baseinfo/paymentCategory/updatePaymentCategory";
       text = "更新成功！";
     }
-    if (!fundcode) {
+    if (!code) {
       swal({
         title : '提示',
         text : "编码不允许为空！",
@@ -233,10 +335,21 @@ $(function() {
         },
       });
     }
-    if (!fundname) {
+    if (!name) {
       swal({
         title : '提示',
         text : "名称不允许为空！",
+        buttons : {
+          confirm : {
+            className : 'btn btn-success'
+          }
+        },
+      });
+    }
+    if (!parentid) {
+      swal({
+        title : '提示',
+        text : "所属分类不允许为空！",
         buttons : {
           confirm : {
             className : 'btn btn-success'
@@ -248,6 +361,7 @@ $(function() {
       "id" : id,
       "code" : code,
       "name" : name,
+      "parentid" : parentid,
       "selfcode" : selfcode,
       "remarks": remarks
     };
@@ -257,29 +371,19 @@ $(function() {
       data : JSON.stringify(data),
       contentType : 'application/json',
       success : function(ret) {
-        if (ret.code == 200) {
+        if (ret.code == 90004 || ret.code == 90005) {
           $('#paymentCategoryList').DataTable().draw(true);
           $('#addRowModal').modal('hide');
-          swal({
-            title : '提示',
-            text : text,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
-        } else {
-          swal({
-            title : '提示',
-            text : ret.msg,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
         }
+        swal({
+          title : '提示',
+          text : ret.msg,
+          buttons : {
+            confirm : {
+              className : 'btn btn-success'
+            }
+          },
+        });
       }
     });
   });

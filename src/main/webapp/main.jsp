@@ -84,15 +84,15 @@
                 <ul class="nav nav-collapse">
                   <li class="active"><a inner-href="pcFundAccount/page/fundAccountList"> <span class="sub-item">资金账户管理</span>
                   </a></li>
-                  <li class="active"><a href="pcReceivePay/page/receivePayList" target="view_window"> <span class="sub-item">收款项目</span>
+                  <li class="active"><a inner-href="pcReceivePay/page/receivePayList"> <span class="sub-item">收款项目</span>
                   </a></li>
-                  <li class="active"><a href="pcPayment/page/paymentList" target="view_window"> <span class="sub-item">付款项目</span>
+                  <li class="active"><a inner-href="pcPayment/page/paymentList"> <span class="sub-item">付款项目</span>
                   </a></li>
-                  <li class="active"><a href="pcCash/page/cashedList" target="view_window"> <span class="sub-item">部门信息</span>
+                  <li class="active"><a inner-href="pcCash/page/cashedList"> <span class="sub-item">部门信息</span>
                   </a></li>
-                  <li class="active"><a href="pcCash/page/cashedList" target="view_window"> <span class="sub-item">客户信息</span>
+                  <li class="active"><a inner-href="pcCash/page/cashedList"> <span class="sub-item">客户信息</span>
                   </a></li>
-                  <li class="active"><a href="pcSalesman/page/salesmanList" target="view_window"> <span class="sub-item">业务员信息</span>
+                  <li class="active"><a inner-href="pcSalesman/page/salesmanList"> <span class="sub-item">业务员信息</span>
                   </a></li>
                 </ul>
               </div></li>

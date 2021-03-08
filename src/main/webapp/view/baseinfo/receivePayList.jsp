@@ -12,6 +12,15 @@
     <%-- <script type="text/javascript" src="${contextPath}/resources/js/user/userList.js"></script> --%>
     <link rel="stylesheet" href="${contextPath}/resources/assets/css/demo.css"/>
     <script type="text/javascript" src="${contextPath}/resources/js/baseinfo/receivePay/receivePayList.js"></script>
+    <style type="text/css">
+      .modal-dialog {
+          max-width: 80%;
+          margin: 1.75rem auto;
+      }
+      .modal-content {
+          height: 800px;
+      }
+    </style>
 </head>
 <body>
 <div class="page-inner">
@@ -129,9 +138,9 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal fade" id="addIncomeCategoryInfoModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
-            <div class="modal-content" style="height: 500px;width: 900px">
+            <div class="modal-content">
                 <div class="modal-header no-bd">
                     <h5 class="modal-title">
                         <span class="fw-mediumbold">新</span> <span class="fw-light">增</span>

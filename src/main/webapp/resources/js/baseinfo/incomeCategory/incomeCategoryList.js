@@ -341,6 +341,17 @@ $(function() {
         },
       });
     }
+    if (!parentid) {
+      swal({
+        title : '提示',
+        text : "所属分类不允许为空！",
+        buttons : {
+          confirm : {
+            className : 'btn btn-success'
+          }
+        },
+      });
+    }
     var data = {
       "id" : id,
       "parentid" : parentid,
