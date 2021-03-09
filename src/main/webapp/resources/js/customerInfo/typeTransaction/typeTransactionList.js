@@ -4,7 +4,7 @@ $(function() {
     selfcode : "selfcode",
     name : "name"
   };
-  $("#salesmanList")
+  $("#typeTransactionList")
       .DataTable(
           {
             columns : [
@@ -14,7 +14,7 @@ $(function() {
                   className : "text-center",
                   width : "5%",
                   render : function(data) {
-                    return "<label class=\"mt-checkbox mt-checkbox-outline\"><input type=\"checkbox\" name=\"salesmanListChk\" value=\""
+                    return "<label class=\"mt-checkbox mt-checkbox-outline\"><input type=\"checkbox\" name=\"typeTransactionListChk\" value=\""
                         + data + "\"><span></span></label>";
                   }
                 }, {
@@ -128,7 +128,7 @@ $(function() {
               };
               $.ajax({
                 type : "POST",
-                url : GlobalParam.context + "/rest/baseinfo/salesman/getSalesmanList",
+                url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTransactionList",
                 data : JSON.stringify(data),
                 contentType : 'application/json',
                 success : function(ret) {
@@ -166,14 +166,14 @@ $(function() {
                           // $(nRow).removeClass("selected");
                           $(nRow).find("input[type='checkbox']").prop(
                               "checked", false);
-                          if ($('#salesmanList tbody tr input:checkbox[name="salesmanListChk"]:checked').length == 0) {
+                          if ($('#typeTransactionList tbody tr input:checkbox[name="typeTransactionListChk"]:checked').length == 0) {
                             $("#allparameterList .rowSelected").addClass(
                                 "disabled");
                           }
                         } else {
-                          $("#salesmanList").dataTable.$("tr.selected").find(
+                          $("#typeTransactionList").dataTable.$("tr.selected").find(
                               "input[type='checkbox']").prop("checked", false);
-                          $("#salesmanList").dataTable.$("tr.selected")
+                          $("#typeTransactionList").dataTable.$("tr.selected")
                               .removeClass("selected");
                           $(nRow).addClass("selected");
                           $(nRow).find("input[type='checkbox']").prop(
@@ -182,44 +182,146 @@ $(function() {
                       });
             },
             "fnDrawCallback" : function(oSettings) {
+              $("#addRow").click(function() {
+                $('#addRowModal').on(
+                    'show.bs.modal',
+                    function(event) {
+                      $("#parentClass").click(function(){
+                        $("#classifiTree").css("display","block");
+                        var settings = {
+                            check : {
+                              enable : true
+                            },
+                            view : {
+                              selectedMulti : false,
+                            // addHoverDom: addHoverDom,
+                            // removeHoverDom: removeHoverDom,
+                            },
+                            data : {
+                              key : {
+                                name : "name"
+                              },
+                              simpleData : {
+                                enable : true,
+                                idKey : "id",
+                                pIdKey : "pId"
+                              }
+                            },
+                            async : {
+                              enable : true,
+                              url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTypeTransactionTreeList",
+                              autoParam : [ "id"],
+                              dataType : 'json'
+                            },
+                            callback: {
+                              onClick: function(event, treeId, treeNode){
+                                $("#parentId").val(treeNode.id);
+                                $("#parentClass").val(treeNode.name);
+                                $("#classifiTree").css("display","none");
+                              }
+                            }
+                        };
+                        $.ajax({
+                          type : "POST",
+                          url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTypeTransactionTreeList",
+                          async:true,
+                          data : {
+                            id:1,
+                            isRoot:true
+                          },
+                          dataType: "json",
+                          success : function(ret) {
+                            if (ret) {
+                              ztreeObj = $.fn.zTree.init($("#classifiTree"), settings,ret);
+                              var nodes = ztreeObj.getNodes();
+                              ztreeObj.expandNode(nodes[0], true, false, false);
+                            }
+                          }
+                        });
+                      });
+                    });
+              });
               $('button[cmd="editBtn"]')
                   .click(
                       function(e) {
                         var rowIndex = $(this).parents("tr").index();
-                        var id = $('#salesmanList').DataTable().row(rowIndex).data().id;
-                        var code = $('#salesmanList').DataTable().row(rowIndex).data().code;
-                        var name = $('#salesmanList').DataTable().row(rowIndex).data().name;
-                        var selfcode = $('#salesmanList').DataTable().row(rowIndex).data().selfcode;
-                        var remarks = $('#salesmanList').DataTable().row(rowIndex).data().remarks;
+                        var id = $('#typeTransactionList').DataTable().row(rowIndex).data().id;
+                        var code = $('#typeTransactionList').DataTable().row(rowIndex).data().code;
+                        var name = $('#typeTransactionList').DataTable().row(rowIndex).data().name;
+                        var parentId = $('#typeTransactionList').DataTable().row(rowIndex).data().parentid;
+                        var selfcode = $('#typeTransactionList').DataTable().row(rowIndex).data().selfcode;
+                        var remarks = $('#typeTransactionList').DataTable().row(rowIndex).data().remarks;
                         $("#addRow").click(
                             function() {
                               $('#addRowModal').on(
                                   'show.bs.modal',
                                   function(event) {
                                     var modal = $(this)
-                                    modal.find('#ids').val(id)
-                                    modal.find('#code').val(fundcode)
-                                    modal.find('#name').val(fundname)
+                                    modal.find('#id').val(id)
+                                    modal.find('#code').val(code)
+                                    modal.find('#name').val(name)
+                                    modal.find('#parentId').val(parentId)
                                     modal.find('#selfcode').val(selfcode)
                                     modal.find('#remarks').val(remarks)
                                   });
                             });
                         $("#addRow").click();
                       });
+              $('button[cmd="deleteBtn"]').click(function(e) {
+                var rowIndex = $(this).parents("tr").index();
+                var id = $('#typeTransactionList').DataTable().row(rowIndex).data().id; 
+                swal({
+                      title : '确认删除',
+                      html : true,
+                      text : "是否确认删除？",
+                      buttons : {
+                        cancel: {
+                          visible: true,
+                          className: 'btn btn-danger'
+                        }, 
+                        confirm : {
+                          className : 'btn btn-success'
+                        }
+                      },
+                    }).then((Delete) => {
+                      if (Delete) {
+                        $.ajax({
+                          type : "DELETE",
+                          url : GlobalParam.context + "/rest/customerInfo/typeTransaction/deleteTypeTransaction/"+id,
+                          contentType : 'application/json',
+                          success : function(ret) {
+                            $('#typeTransactionList').DataTable().draw(true);
+                            swal({
+                              title : '提示',
+                              text: ret.msg,
+                              buttons : {
+                                confirm : {
+                                  className : 'btn btn-success'
+                                }
+                              },
+                            });
+                          }
+                        });
+                      } else {
+                        swal.close();
+                      }
+                    });
+              });
             }
           });
   $("#addButton").click(function(e) {
     var id = $("#id").val();
     var code = $("#code").val();
     var name = $("#name").val();
+    var parentid = $("#parentId").val();
     var selfcode = $("#selfcode").val();
     var remarks = $("#remarks").val();
-    var url = GlobalParam.context + "/rest/baseinfo/salesman/addsalesman";
+    var url = GlobalParam.context + "/rest/customerInfo/typeTransaction/addTypeTransaction";
     var type = "POST";
     var text = "新增成功！";
     if (id) {
       type = "PUT";
-      url = GlobalParam.context + "/rest/baseinfo/salesman/updatesalesman";
+      url = GlobalParam.context + "/rest/customerInfo/typeTransaction/updateTypeTransaction";
       text = "更新成功！";
     }
     if (!code) {
@@ -244,12 +346,23 @@ $(function() {
         },
       });
     }
+    if (!parentid) {
+      swal({
+        title : '提示',
+        text : "所属分类不允许为空！",
+        buttons : {
+          confirm : {
+            className : 'btn btn-success'
+          }
+        },
+      });
+    }
     var data = {
       "id" : id,
       "code" : code,
       "name" : name,
+      "parentid" : parentid,
       "selfcode" : selfcode,
-      "intialamount" : intialamount,
       "remarks": remarks
     };
     $.ajax({
@@ -258,29 +371,19 @@ $(function() {
       data : JSON.stringify(data),
       contentType : 'application/json',
       success : function(ret) {
-        if (ret.code == 200) {
-          $('#salesmanList').DataTable().draw(true);
+        if (ret.code == 10004 || ret.code == 10005) {
+          $('#typeTransactionList').DataTable().draw(true);
           $('#addRowModal').modal('hide');
-          swal({
-            title : '提示',
-            text : text,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
-        } else {
-          swal({
-            title : '提示',
-            text : ret.msg,
-            buttons : {
-              confirm : {
-                className : 'btn btn-success'
-              }
-            },
-          });
         }
+        swal({
+          title : '提示',
+          text : ret.msg,
+          buttons : {
+            confirm : {
+              className : 'btn btn-success'
+            }
+          },
+        });
       }
     });
   });

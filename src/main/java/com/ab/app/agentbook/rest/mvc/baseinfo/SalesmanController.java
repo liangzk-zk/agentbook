@@ -127,7 +127,7 @@ public class SalesmanController implements InitializingBean{
         }
         SalesmanInfo bean = salesmanService.save(info);
         result.setData(bean);
-        result.setResultCode(ResultCode.WLLB_INFO_SAVE_SUCCESS);
+        result.setResultCode(ResultCode.YWY_INFO_SAVE_SUCCESS);
         return result;
     }
     @ApiOperation(value = "更新业务员信息", notes = "更新业务员", tags = {"SALESMAN"})
@@ -160,7 +160,9 @@ public class SalesmanController implements InitializingBean{
         if(info==null) {
             return result.failure(ResultCode.INTERFACE_INNER_INVOKE_ERROR);
         }
-        return result.success(info);
+        result.setData(info);
+        result.setResultCode(ResultCode.YWY_INFO_UPDATE_SUCCESS);
+        return result;
     }
     @ApiOperation(value = "获取业务员信息", notes = "获取业务员信息", tags = {"SALESMAN"})
     @RequestMapping(value="/getSalesman/{id}", method = RequestMethod.GET)

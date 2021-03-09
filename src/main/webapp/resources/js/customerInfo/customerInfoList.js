@@ -25,17 +25,18 @@ $(function() {
         },
         async : {
           enable : true,
-          url : GlobalParam.context + "/rest/transaction/getTransactionList",
+          url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTransactionTreeList",
           autoParam : [ "id"],
           dataType : 'json'
         },
     };
     $.ajax({
       type : "POST",
-      url : GlobalParam.context + "/rest/transaction/getTransactionList",
+      url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTransactionTreeList",
       async:true,
       data : {
-        id:1
+        id : 1,
+        isRoot : true
       },
       dataType: "json",
       success : function(ret) {
@@ -77,7 +78,7 @@ $(function() {
                     },
                     async : {
                       enable : true,
-                      url : GlobalParam.context + "/rest/transaction/getTransactionList",
+                      url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTransactionTreeList",
                       autoParam : [ "id"],
                       dataType : 'json'
                     },
@@ -91,7 +92,7 @@ $(function() {
                 };
                 $.ajax({
                   type : "POST",
-                  url : GlobalParam.context + "/rest/transaction/getTransactionList",
+                  url : GlobalParam.context + "/rest/customerInfo/typeTransaction/getTransactionTreeList",
                   async:true,
                   data : {
                     id:1
@@ -123,7 +124,7 @@ $(function() {
                   }
                 }, {
                   title : "公司名称",
-                  data : "companyname",
+                  data : "code",
                   orderable : true,
                   createdCell : function(nTd, sData, oData, iRow, iCol) {
                     $(nTd).attr("model", "companyname")
@@ -230,7 +231,7 @@ $(function() {
               };
               $.ajax({
                 type : "POST",
-                url : GlobalParam.context + "/rest/carousel/getCarouselList",
+                url : GlobalParam.context + "/rest/customerInfo/getCustomerInfoList",
                 data : JSON.stringify(data),
                 contentType : 'application/json',
                 success : function(ret) {
@@ -324,7 +325,7 @@ $(function() {
                       if (Delete) {
                         $.ajax({
                           type : "DELETE",
-                          url : GlobalParam.context + "/rest/carousel/deleteCarousel/"+id,
+                          url : GlobalParam.context + "/rest/customerInfo/deleteCustomerInfo/"+id,
                           contentType : 'application/json',
                           success : function(ret) {
                             $('#customerInfoList').DataTable().draw(true);
@@ -346,88 +347,6 @@ $(function() {
               });
             }
           });
-  $("#addClassifiInfoButton").click(function(e) {
-    var id = $("#id").val();
-    var parentId = $("#parentId").val();
-    var code = $("#code").val();
-    var name = $("#name").val();
-    var mnemonicCode = $("#mnemonicCode").val();
-    var remarks = $("#remarks").val();
-    if(!parentId){
-      swal({
-        title : '提示',
-        text : '请选择往来类别父类！',
-        buttons : {
-          confirm : {
-            className : 'btn btn-success'
-          }
-        },
-      });
-    }
-    if(!code){
-      swal({
-        title : '提示',
-        text : '编码不允许为空！',
-        buttons : {
-          confirm : {
-            className : 'btn btn-success'
-          }
-        },
-      });
-    }
-    if(!name){
-      swal({
-        title : '提示',
-        text : '名称不允许为空！',
-        buttons : {
-          confirm : {
-            className : 'btn btn-success'
-          }
-        },
-      });
-    }
-    var url = GlobalParam.context + "/rest/transaction/addTransactionInfo";
-    var type = "POST";
-    var text = "新增成功！";
-    if (id) {
-      type = "PUT";
-      url = GlobalParam.context + "/rest/carousel/updateCarousel";
-      text = "更新成功！";
-    }
-    var data = {
-        "parentId" : parentId,
-        "code" : code,
-        "name" : name,
-        "mnemonicCode" : mnemonicCode,
-        "remarks" : remarks 
-    };
-    $.ajax({
-      type : type,
-      url : url,
-      data : JSON.stringify(data),
-      contentType : 'application/json',
-      success : function(ret) {
-        $('#addClassifiInfoModal').modal('hide');
-        if(ret.code=10005){
-          $("#parentId").val("");
-          $("#code").val("");
-          $("#name").val("");
-          $("#mnemonicCode").val("");
-          $("#remarks").val("");
-          loadTreeObj();
-        }
-        swal({
-          title : '提示',
-          text: ret.msg,
-          buttons : {
-            confirm : {
-              className : 'btn btn-success'
-            }
-          },
-        });
-      }
-    });
-  });
   $("#addButton").click(function(e) {
     var id = $("#id").val()
     var companyId = $("#companyId").val();

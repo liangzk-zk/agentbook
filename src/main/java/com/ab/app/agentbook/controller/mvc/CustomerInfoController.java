@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class CustomerInfoController {
 	@RequestMapping(path = "/page/customerInfoList")
     public String showCompanyListPage() {
-        return "company/customerInfoList";
+        return "customerInfo/customerInfoList";
     }
 }

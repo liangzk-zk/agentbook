@@ -58,11 +58,11 @@ public enum ResultCode {
     SKXM_INFO_SAVE_SUCCESS(80004, "收款项目保存成功！"),
     SKXM_INFO_UPDATE_SUCCESS(80005, "收款项目更新成功！"),
     /* 付款项目类别错误：90001-99999 */
-    FKXMLB_HAS_EXISTED(90001, "付款项目已存在，请重新输入！"),
-    FKXMLB_INFO_CODE_IS_NULL(90002, "付款项目编码不能为空，请重新输入！"),
-    FKXMLB_INFO_NAME_IS_NULL(90003, "付款项目名称不能为空，请重新输入！"),
-    FKXMLB_INFO_SAVE_SUCCESS(90004, "付款项目保存成功！"),
-    FKXMLB_INFO_UPDATE_SUCCESS(90005, "付款项目更新成功！"),
+    FKXMLB_HAS_EXISTED(90001, "付款项目类别已存在，请重新输入！"),
+    FKXMLB_INFO_CODE_IS_NULL(90002, "付款项目类别编码不能为空，请重新输入！"),
+    FKXMLB_INFO_NAME_IS_NULL(90003, "付款项目类别名称不能为空，请重新输入！"),
+    FKXMLB_INFO_SAVE_SUCCESS(90004, "付款项目类别保存成功！"),
+    FKXMLB_INFO_UPDATE_SUCCESS(90005, "付款项目类别更新成功！"),
     /* 付款项目错误：100001-109999 */
     FKXM_HAS_EXISTED(100001, "付款项目已存在，请重新输入！"),
     FKXM_INFO_CODE_IS_NULL(100002, "付款项目编码不能为空，请重新输入！"),
@@ -70,11 +70,11 @@ public enum ResultCode {
     FKXM_INFO_SAVE_SUCCESS(100004, "付款项目保存成功！"),
     FKXM_INFO_UPDATE_SUCCESS(100005, "付款项目更新成功！"),
     /* 业务员错误：110001-119999 */
-    YWY_HAS_EXISTED(110001, "付款项目已存在，请重新输入！"),
-    YWY_INFO_CODE_IS_NULL(110002, "付款项目编码不能为空，请重新输入！"),
-    YWY_INFO_NAME_IS_NULL(110003, "付款项目名称不能为空，请重新输入！"),
-    YWY_INFO_SAVE_SUCCESS(110004, "付款项目保存成功！"),
-    YWY_INFO_UPDATE_SUCCESS(110005, "付款项目更新成功！"),
+    YWY_HAS_EXISTED(110001, "业务员信息已存在，请重新输入！"),
+    YWY_INFO_CODE_IS_NULL(110002, "业务员信息编码不能为空，请重新输入！"),
+    YWY_INFO_NAME_IS_NULL(110003, "业务员信息名称不能为空，请重新输入！"),
+    YWY_INFO_SAVE_SUCCESS(110004, "业务员信息保存成功！"),
+    YWY_INFO_UPDATE_SUCCESS(110005, "业务员信息更新成功！"),
     /* 系统错误：40001-49999 */
     SYSTEM_INNER_ERROR(40001, "系统繁忙，请稍后重试"),
     USERRECHARGE_DATA_NONE(40002, "当前用户没有额度信息，请上传支付凭证进行额度生成！"),

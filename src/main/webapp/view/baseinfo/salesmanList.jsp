@@ -31,7 +31,7 @@
         <div class="card">
           <div class="card-header">
             <div class="d-flex align-items-center">
-              <button class="btn btn-primary btn-round ml-auto" style="display:none" id="addRow" data-toggle="modal" data-target="#addRowModal">
+              <button class="btn btn-primary btn-round ml-auto" id="addRow" data-toggle="modal" data-target="#addRowModal">
                 <i class="fa fa-plus"></i> 新增
               </button>
             </div>
@@ -53,7 +53,7 @@
                         <div class="modal-body">
                             <form>
                                 <div class="row">
-                                <input id="ids" type="text" style="display: none" class="form-control" placeholder="fill name">
+                                <input id="id" type="text" style="display: none" class="form-control" placeholder="fill name">
                                     <div class="col-sm-12">
                                         <div class="form-group form-group-default">
                                             <em style="color: red;">*</em>

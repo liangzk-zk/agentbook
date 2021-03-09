@@ -9,11 +9,15 @@ package com.ab.app.agentbook.rest.mvc.company;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,15 +26,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ab.app.agentbook.baseinfo.info.IncomeCategoryInfo;
 import com.ab.app.agentbook.common.tree.bean.TreeNodeWithChild;
 import com.ab.app.agentbook.company.info.AbTransactionInfo;
 import com.ab.app.agentbook.company.service.AbTransactionService;
+import com.ab.app.agentbook.data.crud.criteria.Criterion;
+import com.ab.app.agentbook.jpa.ws.Expression;
 import com.ab.app.agentbook.rest.enums.ResultCode;
+import com.ab.app.agentbook.rest.query.InfoQuery;
+import com.ab.app.agentbook.rest.query.InfoQueryResult;
 import com.ab.app.agentbook.rest.query.Result;
 import com.ab.app.agentbook.rest.query.customerInfo.InfoTransactionQuery;
+import com.ab.app.agentbook.util.CriterionUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
@@ -44,23 +55,35 @@ import io.swagger.annotations.ApiResponses;
 */
 @Api
 @RestController("transactionController")
-@RequestMapping("/rest/transaction")
-public class TypeTransactionController {
+@RequestMapping("/rest/customerInfo/typeTransaction")
+public class TypeTransactionController implements InitializingBean{
     @Autowired
     @Qualifier(value="abTransactionService")
     private AbTransactionService abTransactionService;
+    private Map<String, String> queryUserFieldMapping;
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Assert.notNull(abTransactionService, "incomeCategoryService is required!");
+        if(queryUserFieldMapping == null) {
+            queryUserFieldMapping = new HashMap<String, String>(); 
+            queryUserFieldMapping.put("code", "code");
+            queryUserFieldMapping.put("name", "name");
+            queryUserFieldMapping.put("selfcode", "selfcode");
+        }
+    }
     @ApiOperation(value = "获取往来类别信息", notes = "获取往来类别信息", tags = {"TRANSACTION"})
-    @RequestMapping(value="/getTransactionList", method = RequestMethod.POST)
+    @RequestMapping(value="/getTransactionTreeList", method = RequestMethod.POST)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "获取往来类别信息成功"),
             @ApiResponse(code = 415, message = "请求的参数不合法"),
             @ApiResponse(code = 500, message = "调用获取往来类别信息API内部报错") })
     @ResponseBody
-    public TreeNodeWithChild[] getTransactionList(@RequestParam(value="id") long id) {
+    public TreeNodeWithChild[] getTransactionTreeList(@RequestParam(value="id") long id,
+            @RequestParam(value="isRoot",required = false) boolean isRoot) {
         AbTransactionInfo parent = abTransactionService.findById(id);
         List<TreeNodeWithChild> result = new ArrayList<TreeNodeWithChild>();
         AbTransactionInfo[] child = abTransactionService.findByParentId(parent.getId());
-        if(id==1) {
+        if(isRoot) {
             TreeNodeWithChild info = new TreeNodeWithChild();
             info.setId(String.valueOf(parent.getId()));
             info.setName(parent.getName());
@@ -78,6 +101,34 @@ public class TypeTransactionController {
             }
         }
         return result.toArray(new TreeNodeWithChild[result.size()]);
+    }
+    @ApiOperation(value = "获取往来类别列表信息", notes = "获取往来类别列表信息", tags = {"TRANSACTION"})
+    @RequestMapping(value="/getTransactionList", method = RequestMethod.POST,produces="application/json")
+    @ResponseBody
+    public Result getTransactionList(
+            @ApiParam(name = "query", value = "查询列表参数", required = true)
+            @RequestBody InfoQuery query) {
+        Result result = new Result();
+        InfoQueryResult<AbTransactionInfo> queryResult = new InfoQueryResult<AbTransactionInfo>();
+        Expression[] expressions = query.getExpressions();
+        String orderBy = query.getOrderBy();
+        int startPosition = query.getStartPosition();
+        int maxResults = query.getMaxResults();
+        Criterion[] criterions = CriterionUtil.toCriterions(expressions,queryUserFieldMapping);
+        int count = abTransactionService.getIncomeCategoryCount(criterions);
+        if (count == 0) {
+            queryResult.setDatas(new AbTransactionInfo[0]);
+            queryResult.setTotal(count);
+            return result.success(queryResult);
+        }
+        if(StringUtils.isEmpty(orderBy)) {
+            orderBy = "createdate DESC";
+        }
+        AbTransactionInfo[] datas = abTransactionService.getIncomeCategorys(criterions, startPosition,
+                maxResults, orderBy);
+        queryResult.setDatas(datas);
+        queryResult.setTotal(count);
+        return result.success(queryResult);
     }
     @ApiOperation(value = "新增往来类别信息", notes = "新增往来类别信息", tags = {"TRANSACTION"})
     @RequestMapping(value="/addTransactionInfo", method = RequestMethod.POST)

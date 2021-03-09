@@ -9,6 +9,7 @@ package com.ab.app.agentbook.company.service;
 import java.util.List;
 
 import com.ab.app.agentbook.company.info.AbTransactionInfo;
+import com.ab.app.agentbook.data.crud.criteria.Criterion;
 
 /**
 * <p>
@@ -45,4 +46,6 @@ public interface AbTransactionService {
      * @return
      */
     public AbTransactionInfo save(AbTransactionInfo info);
+    int getIncomeCategoryCount(Criterion[] criterions);
+    AbTransactionInfo[] getIncomeCategorys(Criterion[] criterions, int startPosition, int maxResults, String orderBy);
 }

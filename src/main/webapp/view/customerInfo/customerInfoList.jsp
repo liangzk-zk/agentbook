@@ -121,65 +121,6 @@
                       class="form-control form-control-sm" id="smallInput" placeholder="地址">
                   </div>
                 </div>
-                <div class="modal fade" id="addClassifiInfoModal" tabindex="-1" role="dialog" aria-hidden="true">
-                  <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                      <div class="modal-header no-bd">
-                        <h5 class="modal-title">
-                          <span class="fw-mediumbold">新</span> <span class="fw-light">增</span>
-                        </h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
-                          <span aria-hidden="true">&times;</span>
-                        </button>
-                      </div>
-                      <div class="modal-body">
-                        <form>
-                          <div class="row">
-                            <input id="id" type="text" style="display: none" class="form-control"
-                              placeholder="fill name"> <input id="companyId" type="text" style="display: none"
-                              value="1" class="form-control" placeholder="fill name">
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <em style="color: red;">*</em> <label>所属分类</label> <input id="parentClass" type="text"
-                                  class="form-control" placeholder="所属分类"> <input id="parentId" type="hidden"
-                                  style="display: none" class="form-control">
-                                <ul class="ztree" id="classifiTree" style="display: none"></ul>
-                              </div>
-
-                            </div>
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <em style="color: red;">*</em> <label>编码</label> <input id="code" type="text"
-                                  class="form-control" placeholder="编码">
-                              </div>
-                            </div>
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <em style="color: red;">*</em> <label>名称</label> <input id="name" type="text"
-                                  class="form-control" placeholder="名称">
-                              </div>
-                            </div>
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <em style="color: red;">*</em> <label>助记码</label> <input id="mnemonicCode" type="text"
-                                  class="form-control" placeholder="助记码">
-                              </div>
-                            </div>
-                            <div class="col-sm-12">
-                              <div class="form-group">
-                                <label>备注</label> <input id="remarks" type="text" class="form-control" placeholder="备注">
-                              </div>
-                            </div>
-                          </div>
-                        </form>
-                      </div>
-                      <div class="modal-footer no-bd">
-                        <button type="button" id="addClassifiInfoButton" class="btn btn-primary">确定</button>
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
                 <div class="card-action">
                   <button class="btn btn-success">Submit</button>
                   <button class="btn btn-danger">Cancel</button>
@@ -266,52 +207,6 @@
             </div>
           </div>
           <div class="card-body">
-            <!-- Modal -->
-            <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
-              <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                  <div class="modal-header no-bd">
-                    <h5 class="modal-title">
-                      <span class="fw-mediumbold">新</span> <span class="fw-light">增</span>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    <form>
-                      <div class="row">
-                        <input id="id" type="text" style="display: none" class="form-control" placeholder="fill name">
-                        <input id="companyId" type="text" style="display: none" value="1" class="form-control"
-                          placeholder="fill name">
-                        <div class="col-sm-12">
-                          <div class="form-group form-group-default">
-                            <em style="color: red;">*</em> <label>编码</label> <input id="code" type="text"
-                              class="form-control" placeholder="编码">
-                          </div>
-                        </div>
-                        <div class="col-sm-12">
-                          <div class="form-group form-group-default">
-                            <em style="color: red;">*</em> <label>名称</label> <input id="name" type="text"
-                              class="form-control" placeholder="名称">
-                          </div>
-                        </div>
-                        <div class="col-sm-12">
-                          <div class="form-group form-group-default">
-                            <em style="color: red;">*</em> <label>助记码</label> <input id="mnemonicCode" type="text"
-                              class="form-control" placeholder="助记码">
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  <div class="modal-footer no-bd">
-                    <button type="button" id="addButton" class="btn btn-primary">确定</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
-                  </div>
-                </div>
-              </div>
-            </div>
             <div class="table-responsive">
               <table id="classificationList" class="display table table-striped table-hover">
               </table>
@@ -319,6 +214,27 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="modal fade" id="addClassifiInfoModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" style="height: 800px;">
+                <div class="modal-header no-bd">
+                    <h5 class="modal-title">
+                        <span class="fw-mediumbold">新</span> <span class="fw-light">增</span>
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="关闭">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="contentSubFrame" src="<%= contextPath%>/pcTypeTransaction/page/typeTransactionList" width="100%" height="100%" frameborder=0></iframe>
+                </div>
+                <div class="modal-footer no-bd">
+                    <%--<button type="button" id="addButton" class="btn btn-primary">确定</button>--%>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
     </div>
   </div>
 </body>
